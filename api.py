@@ -15,6 +15,19 @@ sys.path.append(str(Path(__file__).parent / "ai_engine"))
 from clause_detector_pro import analyze_contract
 from pdf_extractor import process_pdf, process_pdf_with_ocr
 
+# Transformer-based clause classifier (fine-tuned Legal-BERT)
+try:
+    from ai_engine.clause_classifier.predict import predict_clause, predict_batch_clauses
+    _CLASSIFIER_AVAILABLE = True
+except Exception as _clf_import_err:  # noqa: BLE001
+    logger.warning(
+        "Clause classifier could not be loaded: %s. "
+        "Train the model first with: python ai_engine/clause_classifier/train.py",
+        _clf_import_err,
+    )
+    _CLASSIFIER_AVAILABLE = False
+
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -33,7 +46,17 @@ class TextAnalysisRequest(BaseModel):
     text: str
     use_preprocessing: bool = True
     use_hybrid: bool = False
-    
+
+
+class ClassifyRequest(BaseModel):
+    """Request model for single-paragraph transformer classification."""
+    paragraph: str
+
+
+class ClassifyBatchRequest(BaseModel):
+    """Request model for batch transformer classification."""
+    paragraphs: List[str]
+
 @app.get("/")
 async def root():
     return {"message": "Legal AI Analyzer API is running"}
@@ -125,6 +148,105 @@ async def analyze_pdf_endpoint(
         # Cleanup
         if os.path.exists(temp_pdf_path):
             os.remove(temp_pdf_path)
+
+# ---------------------------------------------------------------------------
+# Transformer-based Clause Classification endpoints
+# ---------------------------------------------------------------------------
+
+@app.post("/classify_clause")
+async def classify_clause_endpoint(request: ClassifyRequest):
+    """
+    Classify a **single** legal paragraph using the fine-tuned Legal-BERT model.
+
+    Request body
+    ------------
+    - ``paragraph`` : raw legal paragraph string
+
+    Response
+    --------
+    - ``clause_type``  : predicted label (e.g. ``"termination"``)
+    - ``confidence``   : softmax confidence score in [0, 1]
+
+    Example
+    -------
+    ::
+
+        POST /classify_clause
+        {"paragraph": "Either party may terminate with 30 days notice."}
+
+        → {"clause_type": "termination", "confidence": 0.9312}
+    """
+    if not _CLASSIFIER_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Clause classifier model is not available. "
+                   "Train it first: python ai_engine/clause_classifier/train.py",
+        )
+
+    if not request.paragraph or not request.paragraph.strip():
+        raise HTTPException(status_code=400, detail="'paragraph' field cannot be empty.")
+
+    try:
+        result = predict_clause(request.paragraph)
+        return result
+    except Exception as exc:
+        logger.error("Clause classification error: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Classification failed: {exc}")
+
+
+@app.post("/classify_clauses")
+async def classify_clauses_endpoint(request: ClassifyBatchRequest):
+    """
+    Classify **multiple** legal paragraphs in a single request.
+
+    Ideal for processing a fully-split contract document returned by the
+    ``/analyze_pdf`` pipeline.
+
+    Request body
+    ------------
+    - ``paragraphs`` : list of raw legal paragraph strings
+
+    Response
+    --------
+    List of objects, one per input paragraph, each with:
+    - ``clause_type``  : predicted label
+    - ``confidence``   : softmax confidence score
+
+    Example
+    -------
+    ::
+
+        POST /classify_clauses
+        {
+          "paragraphs": [
+            "Either party may terminate with 30 days notice.",
+            "All invoices must be paid within 30 days."
+          ]
+        }
+
+        → [
+            {"clause_type": "termination",   "confidence": 0.9312},
+            {"clause_type": "payment_terms", "confidence": 0.8921}
+          ]
+    """
+    if not _CLASSIFIER_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Clause classifier model is not available. "
+                   "Train it first: python ai_engine/clause_classifier/train.py",
+        )
+
+    paragraphs = [p.strip() for p in request.paragraphs if p and p.strip()]
+    if not paragraphs:
+        raise HTTPException(status_code=400, detail="'paragraphs' list cannot be empty.")
+
+    try:
+        results = predict_batch_clauses(paragraphs)
+        return results
+    except Exception as exc:
+        logger.error("Batch clause classification error: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Batch classification failed: {exc}")
+
 
 if __name__ == "__main__":
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)

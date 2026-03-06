@@ -1,0 +1,81 @@
+text,label
+"The agreement may be terminated by either party upon 30 days written notice.",termination
+"Either party may terminate this contract immediately upon a material breach.",termination
+"This agreement shall terminate automatically upon the expiration of the initial term.",termination
+"The employer reserves the right to terminate this agreement without cause with 60 days notice.",termination
+"Termination for cause shall be effective immediately upon written notice to the breaching party.",termination
+"Upon termination, all licenses granted under this agreement shall immediately cease.",termination
+"The contract may be terminated by mutual written consent of both parties at any time.",termination
+"Either party may terminate this agreement if the other party becomes insolvent.",termination
+"Client agrees to pay all invoices within fifteen (15) days of the invoice date.",payment_terms
+"All payments shall be made in United States Dollars via wire transfer.",payment_terms
+"The contractor shall be compensated at a rate of $150 per hour for services rendered.",payment_terms
+"A late fee of 1.5% per month will be applied to any outstanding balances.",payment_terms
+"The client shall pay a non-refundable deposit of 30% upon signing this agreement.",payment_terms
+"Annual subscription fees are due and payable in advance on the first day of each term.",payment_terms
+"Invoices not disputed within 10 business days of receipt shall be deemed accepted.",payment_terms
+"Payment shall be made within 30 days of receipt of a valid and undisputed invoice.",payment_terms
+"In no event shall either party be liable for indirect or consequential damages.",liability
+"The total liability of either party shall not exceed the amount paid in the preceding 12 months.",liability
+"Each party's liability under this agreement shall be limited to direct damages only.",liability
+"Neither party shall be liable for any loss of profits or loss of data.",liability
+"The service provider's aggregate liability shall not exceed the fees paid in the prior six months.",liability
+"Liability for personal injury or death caused by negligence shall not be limited.",liability
+"Neither party shall be liable for any special, punitive, or exemplary damages.",liability
+"The limitations of liability set forth herein shall survive termination of this agreement.",liability
+"Each party agrees to hold the confidential information of the other in strict confidence.",confidentiality
+"The receiving party shall not disclose confidential information to any third party.",confidentiality
+"Confidential information shall be protected using at least the same degree of care as the party's own.",confidentiality
+"This confidentiality obligation shall survive termination of the agreement for a period of five years.",confidentiality
+"The recipient agrees not to use confidential information for any purpose other than the services.",confidentiality
+"All trade secrets, business plans, and proprietary data shall be treated as confidential.",confidentiality
+"The obligations of confidentiality shall not apply to information already in the public domain.",confidentiality
+"Each party shall limit access to confidential information to employees with a need to know.",confidentiality
+"This agreement shall be governed by the laws of the State of California.",governing_law
+"The parties agree that the governing law shall be the laws of England and Wales.",governing_law
+"This contract shall be construed in accordance with the laws of the State of New York.",governing_law
+"All disputes shall be resolved under the laws of the State of Delaware.",governing_law
+"The governing law of this agreement shall be the federal laws of the United States.",governing_law
+"This agreement is subject to the laws of the jurisdiction in which the company is incorporated.",governing_law
+"The parties agree that any dispute will be settled under the laws of the State of Texas.",governing_law
+"This agreement shall be interpreted under the laws of the Commonwealth of Massachusetts.",governing_law
+"Each party shall indemnify and hold harmless the other from any third-party claims.",indemnification
+"The vendor shall indemnify the client against any claims arising from vendor's negligence.",indemnification
+"Contractor agrees to defend, indemnify, and hold harmless the client from all losses.",indemnification
+"Indemnification obligations shall survive the termination or expiration of this agreement.",indemnification
+"The service provider shall indemnify the client for any intellectual property infringement claims.",indemnification
+"Each party shall indemnify the other for breaches arising from its own willful misconduct.",indemnification
+"The indemnifying party shall assume control of the defense of any indemnified claim.",indemnification
+"Indemnification shall not apply to claims caused by the indemnified party's own negligence.",indemnification
+"All intellectual property created under this agreement shall remain the property of the client.",intellectual_property
+"The contractor assigns all rights in any work product to the client upon full payment.",intellectual_property
+"Each party retains ownership of its pre-existing intellectual property.",intellectual_property
+"The company grants a limited, non-exclusive license to use its software platform.",intellectual_property
+"Any inventions made by the employee in the course of employment shall belong to the employer.",intellectual_property
+"The client shall not reverse engineer or decompile any software provided under this agreement.",intellectual_property
+"All trademarks, trade names, and logos remain the exclusive property of their respective owners.",intellectual_property
+"The licensor grants a worldwide, royalty-free license to use the licensed technology.",intellectual_property
+"Any disputes arising from this agreement shall be resolved by binding arbitration.",dispute_resolution
+"The parties agree to submit any dispute to mediation before initiating legal proceedings.",dispute_resolution
+"Disputes shall be resolved through arbitration administered by the American Arbitration Association.",dispute_resolution
+"Any unresolved dispute shall be submitted to arbitration in accordance with the ICC Rules.",dispute_resolution
+"The parties waive their right to a jury trial for any dispute arising under this agreement.",dispute_resolution
+"Either party may seek injunctive relief in a court of competent jurisdiction prior to arbitration.",dispute_resolution
+"Arbitration shall be conducted in the English language and the seat shall be London.",dispute_resolution
+"The arbitration award shall be final and binding on both parties.",dispute_resolution
+"Neither party shall be liable for delays caused by events beyond its reasonable control.",force_majeure
+"Force majeure events include natural disasters, pandemics, strikes, and government actions.",force_majeure
+"Either party affected by a force majeure event shall notify the other within five business days.",force_majeure
+"If a force majeure event lasts more than 90 days, either party may terminate this agreement.",force_majeure
+"The obligation to perform shall be suspended during the continuance of a force majeure event.",force_majeure
+"Acts of war, terrorism, and civil unrest constitute force majeure events under this agreement.",force_majeure
+"A party invoking force majeure must demonstrate that the event was unforeseeable and unavoidable.",force_majeure
+"Force majeure shall not excuse a party's obligation to make payments already due.",force_majeure
+"The parties agree to cooperate in good faith to resolve any issues that may arise.",other
+"This agreement constitutes the entire understanding between the parties.",other
+"This agreement may be amended only by a written instrument signed by both parties.",other
+"Any waiver of rights under this agreement must be in writing to be effective.",other
+"This agreement may be executed in counterparts, each of which shall be deemed an original.",other
+"The headings in this agreement are for convenience only and shall not affect interpretation.",other
+"If any provision of this agreement is found invalid, the remaining provisions shall remain in effect.",other
+"This agreement is binding upon and inures to the benefit of each party's successors.",other
