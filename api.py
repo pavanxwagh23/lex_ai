@@ -27,6 +27,13 @@ except Exception as _clf_import_err:  # noqa: BLE001
     )
     _CLASSIFIER_AVAILABLE = False
 
+# Semantic contract comparison engine (sentence-transformers + FAISS)
+try:
+    from ai_engine.contract_comparator import compare_contracts
+    _COMPARATOR_AVAILABLE = True
+except Exception as _cmp_import_err:  # noqa: BLE001
+    _COMPARATOR_AVAILABLE = False
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -246,6 +253,80 @@ async def classify_clauses_endpoint(request: ClassifyBatchRequest):
     except Exception as exc:
         logger.error("Batch clause classification error: %s", exc)
         raise HTTPException(status_code=500, detail=f"Batch classification failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Contract Comparison endpoint
+# ---------------------------------------------------------------------------
+
+class CompareContractsRequest(BaseModel):
+    """
+    Request body for the /compare_contracts endpoint.
+
+    Fields
+    ------
+    doc_a_clauses : list[str]
+        Clauses / paragraphs from the **original** contract.
+    doc_b_clauses : list[str]
+        Clauses / paragraphs from the **revised** contract.
+    model_name : str
+        Sentence-transformer model to use for embedding.
+        Defaults to ``sentence-transformers/all-MiniLM-L6-v2``.
+    """
+    doc_a_clauses: List[str]
+    doc_b_clauses: List[str]
+    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+
+
+@app.post("/compare_contracts")
+async def compare_contracts_endpoint(request: CompareContractsRequest):
+    """
+    Semantically compare two lists of legal clauses and return a structured diff.
+
+    Detects clauses that were **added**, **removed**, **modified**, or remain
+    **semantically identical** between Document A and Document B — even when
+    wording changes but meaning stays the same.
+
+    Request body
+    ------------
+    - ``doc_a_clauses`` : list[str] — clauses from the original contract
+    - ``doc_b_clauses`` : list[str] — clauses from the revised contract
+    - ``model_name``    : str (optional) — embedding model to use
+
+    Response
+    --------
+    ::
+
+        {
+          "added":     ["The vendor must comply with GDPR regulations."],
+          "removed":   [],
+          "modified":  [{"clause_a": "...30 days...", "clause_b": "...60 days...", ...}],
+          "related":   [...],
+          "identical": [{"clause_a": "...", "clause_b": "...", ...}],
+          "metadata":  {"doc_a_clauses": 3, "doc_b_clauses": 4, ...}
+        }
+    """
+    if not _COMPARATOR_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Contract comparator is unavailable. "
+                   "Install dependencies: pip install sentence-transformers faiss-cpu",
+        )
+
+    doc_a = [c.strip() for c in request.doc_a_clauses if c and c.strip()]
+    doc_b = [c.strip() for c in request.doc_b_clauses if c and c.strip()]
+
+    if not doc_a:
+        raise HTTPException(status_code=400, detail="'doc_a_clauses' cannot be empty.")
+    if not doc_b:
+        raise HTTPException(status_code=400, detail="'doc_b_clauses' cannot be empty.")
+
+    try:
+        result = compare_contracts(doc_a, doc_b, model_name=request.model_name)
+        return result
+    except Exception as exc:
+        logger.error("Contract comparison error: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Comparison failed: {exc}")
 
 
 if __name__ == "__main__":
