@@ -1,216 +1,370 @@
 import streamlit as st
 import requests
-import pandas as pd
-import json
+import time
 
-API_URL = "http://localhost:8000"
-
+# ─── Page Config ────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Legal AI Analyzer",
+    page_title="LexAI Ultra Chat",
     page_icon="⚖️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-# --- Define custom CSS for the app ---
-def local_css():
-    st.markdown("""
+BACKEND_URL = "http://localhost:8000/analyze"
+
+# ─── Premium CSS ─────────────────────────────────────────────────────────────
+st.markdown(
+    """
     <style>
-        .clause-box {
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            border-left: 5px solid;
-            background-color: var(--background-color-secondary);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        }
-        .clause-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        .clause-title {
-            font-size: 1.2rem;
-            text-transform: uppercase;
-        }
-        .confidence-high { color: #2ecc71; border-left-color: #2ecc71; }
-        .confidence-medium { color: #f1c40f; border-left-color: #f1c40f; }
-        .confidence-low { color: #e74c3c; border-left-color: #e74c3c; }
-        .clause-text {
-            border-top: 1px solid rgba(128,128,128,0.2);
-            padding-top: 0.8rem;
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-        .badge {
-            padding: 0.3rem 0.6rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-block;
-        }
-        .badge-heading {
-            background-color: #3498db;
-            color: white;
-            margin-left: 0.5rem;
-        }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* ── App Background ── */
+    .stApp {
+        background: linear-gradient(135deg, #0a0a0f 0%, #0d1117 40%, #0f0620 70%, #0a0a0f 100%);
+        min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0d0d1a 0%, #111128 100%);
+        border-right: 1px solid rgba(139, 92, 246, 0.25);
+    }
+    section[data-testid="stSidebar"] * {
+        color: #e2e8f0 !important;
+    }
+
+    /* ── Hide default Streamlit elements ── */
+    #MainMenu, footer, header {visibility: hidden;}
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 6rem;
+        max-width: 860px;
+    }
+
+    /* ── App title in sidebar ── */
+    .sidebar-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #a78bfa, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.25rem;
+        text-align: center;
+    }
+    .sidebar-subtitle {
+        font-size: 0.75rem;
+        color: #64748b !important;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    /* ── Chat header ── */
+    .chat-header {
+        text-align: center;
+        padding: 1.5rem 0 0.5rem 0;
+    }
+    .chat-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+    }
+    .chat-header p {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin: 0.25rem 0 0 0;
+    }
+
+    /* ── Message bubbles ── */
+    .msg-row {
+        display: flex;
+        margin: 0.6rem 0;
+        animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.ai   { justify-content: flex-start; }
+
+    .bubble {
+        max-width: 72%;
+        padding: 0.75rem 1.1rem;
+        border-radius: 18px;
+        font-size: 0.92rem;
+        line-height: 1.6;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .bubble.user {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: #f1f5f9;
+        border-bottom-right-radius: 4px;
+        border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+    .bubble.ai {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: #e2e8f0;
+        border-bottom-left-radius: 4px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin: 0 0.5rem;
+        align-self: flex-end;
+    }
+    .avatar.user {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        order: 1;
+    }
+    .avatar.ai {
+        background: linear-gradient(135deg, #0f172a, #1e1b4b);
+        border: 1px solid rgba(139,92,246,0.4);
+        color: #a78bfa;
+        order: -1;
+    }
+
+    /* ── Error bubble ── */
+    .bubble.error {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        border-radius: 18px;
+        border-bottom-left-radius: 4px;
+    }
+
+    /* ── Typing animation ── */
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0.6rem 1rem;
+    }
+    .dot {
+        width: 8px; height: 8px;
+        background: #a78bfa;
+        border-radius: 50%;
+        animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+        30%            { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ── Input area ── */
+    .stChatInput > div {
+        background: rgba(255,255,255,0.04) !important;
+        border: 1px solid rgba(139,92,246,0.35) !important;
+        border-radius: 14px !important;
+    }
+    .stChatInput textarea {
+        color: #e2e8f0 !important;
+        background: transparent !important;
+    }
+    .stChatInput button {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+        border-radius: 10px !important;
+        border: none !important;
+    }
+
+    /* ── New Chat button ── */
+    div[data-testid="stButton"] button {
+        width: 100%;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white !important;
+        border: none;
+        border-radius: 10px;
+        padding: 0.55rem 1rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    div[data-testid="stButton"] button:hover { opacity: 0.88; }
+
+    /* ── Divider ── */
+    hr { border-color: rgba(139,92,246,0.2) !important; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 3px; }
     </style>
-    """, unsafe_allow_html=True)
-    
-local_css()
+    """,
+    unsafe_allow_html=True,
+)
 
-# --- Utility Functions ---
-def get_confidence_class(score):
-    if score >= 0.75: return "confidence-high"
-    elif score >= 0.5: return "confidence-medium"
-    return "confidence-low"
+# ─── Session State ────────────────────────────────────────────────────────────
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "is_loading" not in st.session_state:
+    st.session_state.is_loading = False
 
-def display_clause(clause):
-    conf_class = get_confidence_class(clause['confidence'])
-    heading_badge = '<span class="badge badge-heading">HEADING</span>' if clause.get('is_heading') else ''
-    
-    st.markdown(f"""
-    <div class="clause-box {conf_class}">
-        <div class="clause-header">
-            <div>
-                <span class="clause-title">{clause['clause_type']}</span>
-                {heading_badge}
-            </div>
-            <span>Confidence: {clause['confidence']:.2f}</span>
-        </div>
-        <div class="clause-text">
-            {clause['text']}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-
-# --- Main App ---
-st.title("⚖️ Legal AI Analyzer Pro")
-st.markdown("Upload a contract or paste text to detect legal clauses automatically.")
-
-# --- Sidebar Configuration ---
-st.sidebar.header("Configuration")
-use_preprocessing = st.sidebar.checkbox("Use spaCy Preprocessing", value=True, help="Applies lemmatization and advanced normalization.")
-use_hybrid = st.sidebar.checkbox("Use Hybrid Classifier", value=False, help="Fall back to ML models for low-confidence rules (if configured).")
-
-mode = st.radio("Select Input Mode:", ["Upload PDF", "Paste Text"], horizontal=True)
-
-st.markdown("---")
-
-if 'analysis_results' not in st.session_state:
-    st.session_state.analysis_results = None
-
-# --- Upload PDF Mode ---
-if mode == "Upload PDF":
-    uploaded_file = st.file_uploader("Choose a PDF Contract", type="pdf")
-    use_ocr = st.checkbox("Enable OCR (for scanned PDFs)", value=False)
-    
-    if st.button("Analyze PDF", type="primary"):
-        if uploaded_file is not None:
-            with st.spinner("Analyzing document... This may take a moment."):
-                try:
-                    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "application/pdf")}
-                    data = {
-                        "use_ocr": use_ocr,
-                        "use_preprocessing": use_preprocessing,
-                        "use_hybrid": use_hybrid
-                    }
-                    response = requests.post(f"{API_URL}/analyze_pdf", files=files, data=data)
-                    
-                    if response.status_code == 200:
-                        st.session_state.analysis_results = response.json()["analysis"]
-                        st.success("Analysis Complete!")
-                    else:
-                        st.error(f"Error from server: {response.text}")
-                except requests.exceptions.ConnectionError:
-                    st.error("Failed to connect to the backend server. Is FastAPI running on port 8000?")
-        else:
-            st.warning("Please upload a file first.")
-
-# --- Paste Text Mode ---
-else:
-    text_input = st.text_area("Paste contract text here:", height=300, placeholder="1. DEFINITIONS\n\nFor the purposes of this Agreement...")
-    
-    if st.button("Analyze Text", type="primary"):
-        if text_input.strip():
-            with st.spinner("Analyzing text..."):
-                try:
-                    payload = {
-                        "text": text_input,
-                        "use_preprocessing": use_preprocessing,
-                        "use_hybrid": use_hybrid
-                    }
-                    response = requests.post(f"{API_URL}/analyze_text", json=payload)
-                    
-                    if response.status_code == 200:
-                        st.session_state.analysis_results = response.json()
-                        st.success("Analysis Complete!")
-                    else:
-                        st.error(f"Error from server: {response.text}")
-                except requests.exceptions.ConnectionError:
-                    st.error("Failed to connect to the backend server. Is FastAPI running on port 8000?")
-        else:
-            st.warning("Please enter some text to analyze.")
-
-
-# --- Display Results ---
-if st.session_state.analysis_results:
-    results = st.session_state.analysis_results
-    stats = results["statistics"]
-    grouped_clauses = results["grouped_clauses"]
-    all_clauses = results["structured_clauses"]
-    
+# ─── Sidebar ─────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown('<div class="sidebar-title">⚖️ LexAI Ultra</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-subtitle">AI Legal Assistant · Powered by Llama 3</div>', unsafe_allow_html=True)
     st.markdown("---")
-    st.header("Results Dashboard")
-    
-    # Overview Metrics
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total Paragraphs Checked", stats["total_paragraphs"])
-    col2.metric("Average Confidence", f"{stats['average_confidence']:.2f}")
-    detected_types = sum(1 for v in stats['clause_counts'].values() if v > 0)
-    col3.metric("Clause Types Found", detected_types)
-    
-    st.write("")
-    
-    # Filter non-empty categories
-    active_categories = {k: v for k, v in grouped_clauses.items() if v}
-    
-    if not active_categories:
-        st.info("No specific legal clauses were recognized. Everything was classified as 'Other'.")
-    else:
-        # Create tabs for structured viewing
-        tab_names = ["All Extracted"] + [k.replace('_', ' ').title() for k in active_categories.keys()]
-        tabs = st.tabs(tab_names)
-        
-        # Tab 0: All Clauses (grouped, easy scanning)
-        with tabs[0]:
-            # Filter out the "other" category for the main view to reduce noise, unless it's only 'other'
-            display_list = [c for c in all_clauses if c['clause_type'] != 'other' or c.get('is_heading')]
-            
-            # Show high confidence first
-            display_list.sort(key=lambda x: x['confidence'], reverse=True)
-            
-            st.subheader(f"Top Extracted Clauses ({len(display_list)})")
-            # Only show top 20 to avoid freezing on huge docs
-            for clause in display_list[:20]:
-                display_clause(clause)
-            if len(display_list) > 20:
-                st.info(f"...and {len(display_list) - 20} more clauses below threshold.")
-        
-        # Subsequent Tabs: Individual Categories
-        for i, (cat_name, cat_clauses) in enumerate(active_categories.items()):
-            # i+1 because Tab 0 is "All"
-            with tabs[i+1]:
-                st.subheader(f"{cat_name.replace('_', ' ').title()} Clauses ({len(cat_clauses)})")
-                
-                # Sort by confidence
-                cat_clauses.sort(key=lambda x: x['confidence'], reverse=True)
-                
-                for clause in cat_clauses:
-                    display_clause(clause)
 
-    # Raw Json option
-    with st.expander("View Raw JSON Output"):
-        st.json(results)
+    if st.button("✦ New Chat", key="new_chat"):
+        st.session_state.messages = []
+        st.rerun()
+
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style="color:#475569;font-size:0.78rem;line-height:1.6;">
+        <b style="color:#a78bfa;">How to use:</b><br>
+        Ask any legal question and LexAI will provide a clear, professional answer.<br><br>
+        <b style="color:#a78bfa;">Running locally on:</b><br>
+        🔗 Ollama · llama3<br>
+        🔗 FastAPI backend<br>
+        🔗 Streamlit UI
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# ─── Main Header ─────────────────────────────────────────────────────────────
+st.markdown(
+    """
+    <div class="chat-header">
+        <h1>⚖️ LexAI Ultra Chat</h1>
+        <p>Your AI-powered legal assistant — ask anything about law, contracts, or rights.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ─── Chat History ─────────────────────────────────────────────────────────────
+def render_message(role: str, content: str, is_error: bool = False):
+    bubble_class = "error" if is_error else role
+    avatar_icon = "👤" if role == "user" else "⚖️"
+
+    if role == "user":
+        st.markdown(
+            f"""
+            <div class="msg-row user">
+                <div class="bubble user">{content}</div>
+                <div class="avatar user">{avatar_icon}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            f"""
+            <div class="msg-row ai">
+                <div class="avatar ai">{avatar_icon}</div>
+                <div class="bubble {bubble_class}">{content}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+for msg in st.session_state.messages:
+    render_message(msg["role"], msg["content"], msg.get("is_error", False))
+
+# ─── Typing Indicator ─────────────────────────────────────────────────────────
+typing_placeholder = st.empty()
+
+if st.session_state.is_loading:
+    typing_placeholder.markdown(
+        """
+        <div class="msg-row ai">
+            <div class="avatar ai">⚖️</div>
+            <div class="bubble ai">
+                <div class="typing-indicator">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+# ─── Input Box ────────────────────────────────────────────────────────────────
+user_input = st.chat_input("Ask a legal question…", disabled=st.session_state.is_loading)
+
+if user_input:
+    user_text = user_input.strip()
+    if not user_text:
+        st.warning("Please enter a message before sending.")
+    else:
+        # Add user message
+        st.session_state.messages.append({"role": "user", "content": user_text})
+        st.session_state.is_loading = True
+        st.rerun()
+
+# ─── Backend Call (runs on rerun when is_loading=True) ────────────────────────
+if st.session_state.is_loading and st.session_state.messages:
+    last_msg = st.session_state.messages[-1]
+    if last_msg["role"] == "user":
+        try:
+            response = requests.post(
+                BACKEND_URL,
+                json={"text": last_msg["content"]},
+                timeout=120,
+            )
+            if response.status_code == 200:
+                ai_text = response.json().get("result", "No response received.")
+                st.session_state.messages.append({"role": "ai", "content": ai_text})
+            elif response.status_code == 503:
+                st.session_state.messages.append({
+                    "role": "ai",
+                    "content": "⚠️ Ollama is not running. Please start it with: `ollama run llama3`",
+                    "is_error": True,
+                })
+            else:
+                detail = response.json().get("detail", "Unknown error from backend.")
+                st.session_state.messages.append({
+                    "role": "ai",
+                    "content": f"⚠️ Backend error: {detail}",
+                    "is_error": True,
+                })
+        except requests.exceptions.ConnectionError:
+            st.session_state.messages.append({
+                "role": "ai",
+                "content": "⚠️ Backend not responding. Make sure you ran: `python -m uvicorn api:app --reload`",
+                "is_error": True,
+            })
+        except requests.exceptions.Timeout:
+            st.session_state.messages.append({
+                "role": "ai",
+                "content": "⚠️ Request timed out. Ollama may be slow — please try again.",
+                "is_error": True,
+            })
+        except Exception as e:
+            st.session_state.messages.append({
+                "role": "ai",
+                "content": f"⚠️ Unexpected error: {str(e)}",
+                "is_error": True,
+            })
+        finally:
+            st.session_state.is_loading = False
+            st.rerun()
