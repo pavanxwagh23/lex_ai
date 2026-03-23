@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import requests
-import json
+from transformers import pipeline
+import torch
 
 app = FastAPI(title="LexAI Ultra Chat API")
 
@@ -14,8 +14,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "llama3"
+# ─── Load model once at startup ───────────────────────────────────────────────
+# Uses google/flan-t5-base — small, fast, runs on CPU, no API key needed
+print("Loading AI model... (first run may take a minute to download)")
+try:
+    ai_pipeline = pipeline(
+        "text2text-generation",
+        model="google/flan-t5-base",
+        device=-1,  # CPU
+        max_new_tokens=512,
+    )
+    print("✅ AI model loaded successfully.")
+except Exception as e:
+    print(f"❌ Failed to load model: {e}")
+    ai_pipeline = None
 
 
 class AnalyzeRequest(BaseModel):
@@ -36,38 +48,26 @@ def analyze(request: AnalyzeRequest):
     if not request.text or not request.text.strip():
         raise HTTPException(status_code=400, detail="Input text cannot be empty.")
 
-    prompt = (
-        "You are a professional legal expert named LexAI. "
-        "Give clear, simple, structured and correct legal answers. "
-        "Be concise but thorough.\n\n"
-        f"User: {request.text.strip()}\n\nLexAI:"
-    )
-
-    payload = {
-        "model": OLLAMA_MODEL,
-        "prompt": prompt,
-        "stream": False,
-    }
-
-    try:
-        response = requests.post(OLLAMA_URL, json=payload, timeout=120)
-        response.raise_for_status()
-        data = response.json()
-        result_text = data.get("response", "").strip()
-        if not result_text:
-            raise HTTPException(status_code=500, detail="Ollama returned an empty response.")
-        return AnalyzeResponse(result=result_text)
-
-    except requests.exceptions.ConnectionError:
+    if ai_pipeline is None:
         raise HTTPException(
             status_code=503,
-            detail="Ollama is not running. Please start Ollama with: ollama run llama3",
+            detail="AI model failed to load. Please restart the server.",
         )
-    except requests.exceptions.Timeout:
-        raise HTTPException(status_code=504, detail="Ollama timed out. Please try again.")
-    except requests.exceptions.HTTPError as e:
-        raise HTTPException(status_code=502, detail=f"Ollama HTTP error: {str(e)}")
-    except (json.JSONDecodeError, KeyError) as e:
-        raise HTTPException(status_code=500, detail=f"Failed to parse Ollama response: {str(e)}")
+
+    prompt = (
+        "You are a professional legal expert. "
+        "Answer the following legal question clearly and accurately.\n\n"
+        f"Question: {request.text.strip()}\n\nAnswer:"
+    )
+
+    try:
+        outputs = ai_pipeline(prompt, max_new_tokens=512, do_sample=False)
+        result_text = outputs[0]["generated_text"].strip()
+        if not result_text:
+            raise HTTPException(status_code=500, detail="Model returned an empty response.")
+        return AnalyzeResponse(result=result_text)
+
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Model inference error: {str(e)}")
