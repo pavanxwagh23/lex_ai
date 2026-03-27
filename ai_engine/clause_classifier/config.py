@@ -28,6 +28,8 @@ CLAUSE_LABELS: list[str] = [
     "intellectual_property",
     "dispute_resolution",
     "force_majeure",
+    "non_compete",
+    "warranties",
     "other",
 ]
 

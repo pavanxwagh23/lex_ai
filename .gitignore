@@ -47,3 +47,9 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Trained model binary (regenerate with train_sklearn.py)
+*.pkl
+
+# Classification report
+models/sklearn_clause_classifier/report.txt

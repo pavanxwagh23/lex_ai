@@ -7,6 +7,13 @@ text,label
 "Upon termination, all licenses granted under this agreement shall immediately cease.",termination
 "The contract may be terminated by mutual written consent of both parties at any time.",termination
 "Either party may terminate this agreement if the other party becomes insolvent.",termination
+"The company may immediately terminate this agreement upon the employee's conviction of a felony.",termination
+"This agreement may be terminated with immediate effect if the contractor violates confidentiality obligations.",termination
+"Any party may terminate the contract upon 90 days written notice without assigning any reason.",termination
+"The client may terminate this agreement if deliverables are not met within the agreed timeline.",termination
+"Upon early termination, the breaching party shall be liable for all outstanding amounts.",termination
+"Either party may terminate upon a change of control of the other party.",termination
+"The service agreement shall automatically renew unless terminated by written notice 30 days prior.",termination
 "Client agrees to pay all invoices within fifteen (15) days of the invoice date.",payment_terms
 "All payments shall be made in United States Dollars via wire transfer.",payment_terms
 "The contractor shall be compensated at a rate of $150 per hour for services rendered.",payment_terms
@@ -15,6 +22,13 @@ text,label
 "Annual subscription fees are due and payable in advance on the first day of each term.",payment_terms
 "Invoices not disputed within 10 business days of receipt shall be deemed accepted.",payment_terms
 "Payment shall be made within 30 days of receipt of a valid and undisputed invoice.",payment_terms
+"The total contract value of $50,000 shall be paid in equal monthly installments over 12 months.",payment_terms
+"A processing fee of 2% will be charged on all credit card transactions.",payment_terms
+"Contractor shall submit invoices monthly, and payment shall be made within 45 days of receipt.",payment_terms
+"The client shall reimburse all pre-approved travel and accommodation expenses within 14 days.",payment_terms
+"Fees are subject to annual revision with 60 days prior written notice to the client.",payment_terms
+"All amounts payable under this agreement are exclusive of applicable taxes, which shall be borne by the client.",payment_terms
+"Payment disputes must be raised in writing within 7 days of invoice receipt.",payment_terms
 "In no event shall either party be liable for indirect or consequential damages.",liability
 "The total liability of either party shall not exceed the amount paid in the preceding 12 months.",liability
 "Each party's liability under this agreement shall be limited to direct damages only.",liability
@@ -23,6 +37,13 @@ text,label
 "Liability for personal injury or death caused by negligence shall not be limited.",liability
 "Neither party shall be liable for any special, punitive, or exemplary damages.",liability
 "The limitations of liability set forth herein shall survive termination of this agreement.",liability
+"The company's liability for any defective product shall be limited to replacement or refund.",liability
+"Neither party shall be liable for economic loss, loss of goodwill, or loss of anticipated savings.",liability
+"The contractor's total liability shall be capped at the value of the contract.",liability
+"Neither party shall be liable for any third-party claims arising out of this agreement.",liability
+"Liability for data breaches caused by wilful misconduct shall not be subject to any cap.",liability
+"In no event shall either party be liable for delays caused by acts of God or government action.",liability
+"Any limitation of liability shall not apply in cases of fraud or fraudulent misrepresentation.",liability
 "Each party agrees to hold the confidential information of the other in strict confidence.",confidentiality
 "The receiving party shall not disclose confidential information to any third party.",confidentiality
 "Confidential information shall be protected using at least the same degree of care as the party's own.",confidentiality
@@ -31,6 +52,13 @@ text,label
 "All trade secrets, business plans, and proprietary data shall be treated as confidential.",confidentiality
 "The obligations of confidentiality shall not apply to information already in the public domain.",confidentiality
 "Each party shall limit access to confidential information to employees with a need to know.",confidentiality
+"The receiving party shall immediately notify the disclosing party upon discovering any unauthorized disclosure.",confidentiality
+"Confidential information shall not be reproduced, copied, or transmitted without prior written consent.",confidentiality
+"Upon termination, all confidential materials shall be returned or destroyed within 10 business days.",confidentiality
+"Employees with access to confidential information shall sign individual non-disclosure obligations.",confidentiality
+"The receiving party shall use the confidential information solely for the purpose of evaluating the transaction.",confidentiality
+"Any breach of this confidentiality clause shall entitle the disclosing party to seek injunctive relief.",confidentiality
+"Confidential information includes financial data, customer lists, pricing, and technical documentation.",confidentiality
 "This agreement shall be governed by the laws of the State of California.",governing_law
 "The parties agree that the governing law shall be the laws of England and Wales.",governing_law
 "This contract shall be construed in accordance with the laws of the State of New York.",governing_law
@@ -39,6 +67,13 @@ text,label
 "This agreement is subject to the laws of the jurisdiction in which the company is incorporated.",governing_law
 "The parties agree that any dispute will be settled under the laws of the State of Texas.",governing_law
 "This agreement shall be interpreted under the laws of the Commonwealth of Massachusetts.",governing_law
+"The parties submit to the exclusive jurisdiction of the courts of Singapore.",governing_law
+"This agreement shall be governed by and construed in accordance with the laws of Germany.",governing_law
+"Applicable law for this agreement is the law of the State of Illinois, excluding conflict of laws provisions.",governing_law
+"Any notices under this agreement shall be governed by the laws of the State of Florida.",governing_law
+"This contract shall be subject to the laws of the Province of Ontario, Canada.",governing_law
+"The rights and obligations of the parties shall be interpreted under the laws of Australia.",governing_law
+"The agreement shall be construed in accordance with the laws of the United Arab Emirates.",governing_law
 "Each party shall indemnify and hold harmless the other from any third-party claims.",indemnification
 "The vendor shall indemnify the client against any claims arising from vendor's negligence.",indemnification
 "Contractor agrees to defend, indemnify, and hold harmless the client from all losses.",indemnification
@@ -47,6 +82,13 @@ text,label
 "Each party shall indemnify the other for breaches arising from its own willful misconduct.",indemnification
 "The indemnifying party shall assume control of the defense of any indemnified claim.",indemnification
 "Indemnification shall not apply to claims caused by the indemnified party's own negligence.",indemnification
+"The supplier shall indemnify and hold harmless the buyer for product liability claims.",indemnification
+"The contractor shall indemnify the client against claims of bodily injury resulting from contractor's work.",indemnification
+"Each party agrees to indemnify the other against losses resulting from data breaches it causes.",indemnification
+"The company shall indemnify directors and officers for legal costs incurred in their official capacity.",indemnification
+"Indemnification shall cover reasonable legal fees and expenses of the indemnified party.",indemnification
+"The client shall indemnify the vendor for any unauthorized use of the vendor's services.",indemnification
+"Indemnity obligations shall not be subject to the limitation of liability caps in this agreement.",indemnification
 "All intellectual property created under this agreement shall remain the property of the client.",intellectual_property
 "The contractor assigns all rights in any work product to the client upon full payment.",intellectual_property
 "Each party retains ownership of its pre-existing intellectual property.",intellectual_property
@@ -55,6 +97,13 @@ text,label
 "The client shall not reverse engineer or decompile any software provided under this agreement.",intellectual_property
 "All trademarks, trade names, and logos remain the exclusive property of their respective owners.",intellectual_property
 "The licensor grants a worldwide, royalty-free license to use the licensed technology.",intellectual_property
+"Moral rights in any creative work produced under this agreement are waived by the creator.",intellectual_property
+"Any derivative works created by the licensee shall be owned jointly by both parties.",intellectual_property
+"The vendor grants the client a non-transferable, non-sublicensable license to use the software.",intellectual_property
+"All source code developed under this contract shall be delivered to the client upon completion.",intellectual_property
+"The client shall have the right to use any feedback provided by the vendor for product improvement.",intellectual_property
+"Neither party shall use the other's brand name or logo without prior written consent.",intellectual_property
+"The contractor shall ensure that all work product is free from third-party intellectual property claims.",intellectual_property
 "Any disputes arising from this agreement shall be resolved by binding arbitration.",dispute_resolution
 "The parties agree to submit any dispute to mediation before initiating legal proceedings.",dispute_resolution
 "Disputes shall be resolved through arbitration administered by the American Arbitration Association.",dispute_resolution
@@ -63,6 +112,13 @@ text,label
 "Either party may seek injunctive relief in a court of competent jurisdiction prior to arbitration.",dispute_resolution
 "Arbitration shall be conducted in the English language and the seat shall be London.",dispute_resolution
 "The arbitration award shall be final and binding on both parties.",dispute_resolution
+"Disputes shall first be referred to senior management of each party for amicable resolution.",dispute_resolution
+"If not resolved within 30 days, the dispute shall be escalated to an independent arbitrator.",dispute_resolution
+"The prevailing party in any arbitration shall be entitled to recover its legal fees from the other party.",dispute_resolution
+"Mediation shall be a mandatory prerequisite before any litigation proceedings are initiated.",dispute_resolution
+"The parties agree to exclusive jurisdiction of the courts of New York for any legal disputes.",dispute_resolution
+"Each party waives the right to bring class action claims under this agreement.",dispute_resolution
+"Disputes arising from intellectual property breaches may be brought directly to court without mediation.",dispute_resolution
 "Neither party shall be liable for delays caused by events beyond its reasonable control.",force_majeure
 "Force majeure events include natural disasters, pandemics, strikes, and government actions.",force_majeure
 "Either party affected by a force majeure event shall notify the other within five business days.",force_majeure
@@ -71,6 +127,37 @@ text,label
 "Acts of war, terrorism, and civil unrest constitute force majeure events under this agreement.",force_majeure
 "A party invoking force majeure must demonstrate that the event was unforeseeable and unavoidable.",force_majeure
 "Force majeure shall not excuse a party's obligation to make payments already due.",force_majeure
+"Epidemics, embargoes, and cyberattacks shall be considered force majeure events.",force_majeure
+"A party claiming force majeure must resume performance as soon as the event ceases.",force_majeure
+"Force majeure events include government-imposed travel restrictions and supply chain disruptions.",force_majeure
+"Notice of a force majeure event shall include an estimated duration and expected impact on performance.",force_majeure
+"If force majeure persists beyond 60 days, the affected party may renegotiate contract terms.",force_majeure
+"Force majeure shall not relieve a party of the obligation to maintain data security.",force_majeure
+"Each party shall take reasonable steps to mitigate the effects of any force majeure event.",force_majeure
+"The employee shall not, during or after the term of employment, solicit clients of the employer.",non_compete
+"The contractor agrees not to engage in any competing business within a 50-mile radius for 2 years.",non_compete
+"For a period of 12 months after termination, the employee shall not work for a competitor.",non_compete
+"The non-compete obligation shall apply globally for the duration of 18 months post-termination.",non_compete
+"The contractor shall not directly or indirectly engage in any activity in competition with the company.",non_compete
+"The employee shall not recruit or solicit any staff of the employer for two years after leaving.",non_compete
+"The non-solicitation restriction applies to clients with whom the employee had direct contact.",non_compete
+"The restrictions herein shall apply in all jurisdictions where the company conducts business.",non_compete
+"The contractor agrees not to use knowledge of company pricing to benefit a competitor.",non_compete
+"Non-compete obligations are subject to applicable local law and may not be enforceable in all regions.",non_compete
+"The employee acknowledges that breach of the non-compete clause will cause irreparable harm.",non_compete
+"The company may seek injunctive relief without bond in the event of a breach of the non-compete clause.",non_compete
+"The service provider warrants that all services will be performed in a professional and workmanlike manner.",warranties
+"The vendor represents and warrants that its software does not infringe any third-party intellectual property.",warranties
+"The company provides no warranty, express or implied, for any third-party services.",warranties
+"The product is provided 'as is' without any warranty of merchantability or fitness for a particular purpose.",warranties
+"The contractor warrants that it has the legal right and authority to enter into this agreement.",warranties
+"The supplier warrants that all goods delivered shall be free from defects in materials and workmanship.",warranties
+"Each party represents and warrants that the execution of this agreement does not violate any applicable law.",warranties
+"The service provider warrants that its services will meet the agreed specifications for 90 days.",warranties
+"The company disclaims all implied warranties to the fullest extent permitted by law.",warranties
+"The client warrants that all information provided to the vendor is accurate and complete.",warranties
+"The contractor warrants that all personnel assigned to the project have the required qualifications.",warranties
+"No warranty is made with respect to the uninterrupted or error-free operation of the software.",warranties
 "The parties agree to cooperate in good faith to resolve any issues that may arise.",other
 "This agreement constitutes the entire understanding between the parties.",other
 "This agreement may be amended only by a written instrument signed by both parties.",other
@@ -79,3 +166,521 @@ text,label
 "The headings in this agreement are for convenience only and shall not affect interpretation.",other
 "If any provision of this agreement is found invalid, the remaining provisions shall remain in effect.",other
 "This agreement is binding upon and inures to the benefit of each party's successors.",other
+"Neither party may assign its rights under this agreement without the prior written consent of the other.",other
+"Notices under this agreement shall be sent by certified mail or electronic mail to the addresses specified.",other
+"This agreement supersedes all prior agreements and communications between the parties.",other
+"Failure to exercise a right under this agreement shall not constitute a waiver of that right.",other
+"The parties are independent contractors and nothing herein creates an employment relationship.",other
+"This agreement shall not be construed against either party as the drafter.",other
+"Electronic signatures shall be deemed valid and binding for purposes of this agreement.",other
+"The agreement shall terminate upon the death or incapacity of either party.","termination"
+"Either party may terminate if the other party undergoes insolvency proceedings.","termination"
+"The client may terminate immediately if the contractor is found guilty of fraud.","termination"
+"This agreement shall be deemed terminated upon full payment of all obligations.","termination"
+"Termination by written notice shall take effect on the date specified in the notice.","termination"
+"The contractor may terminate this agreement if payments are overdue by more than 60 days.","termination"
+"Upon termination, all data belonging to the client shall be returned within 5 days.","termination"
+"Either party may terminate at will with 14 days written notice.","termination"
+"This agreement shall terminate if the project is abandoned for more than 90 days.","termination"
+"The company reserves the right to terminate access to its platform at any time.","termination"
+"Termination shall not relieve either party of accrued obligations or liabilities.","termination"
+"The employer may terminate this contract summarily for gross misconduct.","termination"
+"In the event of termination, all work in progress shall be delivered to the client.","termination"
+"Either party may terminate upon a court order or regulatory directive.","termination"
+"The agreement may be terminated if a force majeure event persists beyond 120 days.","termination"
+"Payment shall be made within 21 days of delivery of the goods.","payment_terms"
+"The client shall pay a monthly retainer fee of $5,000 payable in advance.","payment_terms"
+"Overdue payments shall accrue interest at the rate of 2% per month.","payment_terms"
+"All prices quoted are in US dollars and are exclusive of applicable taxes.","payment_terms"
+"The service fee shall be reviewed annually and may be adjusted with 30 days notice.","payment_terms"
+"The supplier shall issue invoices within 7 days of delivery of services.","payment_terms"
+"The client shall pay a kill fee of 25% if the project is cancelled after kickoff.","payment_terms"
+"Milestone payments shall be made upon written approval of each deliverable.","payment_terms"
+"In case of dispute, undisputed portions of an invoice must still be paid promptly.","payment_terms"
+"Contractor shall be reimbursed for pre-approved out-of-pocket expenses monthly.","payment_terms"
+"The first payment is due upon signing; subsequent payments are due monthly.","payment_terms"
+"Invoices must reference the purchase order number to be processed.","payment_terms"
+"The client shall pay the full project amount in escrow before work commences.","payment_terms"
+"Payments not disputed within 15 days of invoice shall be deemed accepted and due.","payment_terms"
+"A 10% discount is offered for payments made within 7 days of invoice date.","payment_terms"
+"The company shall not be liable for damages arising from the use of third-party tools.","liability"
+"Neither party shall be liable for loss of revenue or business opportunity.","liability"
+"Our maximum liability for any single claim shall not exceed USD 10,000.","liability"
+"The service provider shall not be held liable for system downtime beyond its control.","liability"
+"Liability for property damage caused by negligence shall be capped at actual repair costs.","liability"
+"Neither party waives its right to claim liability for fraud or willful misconduct.","liability"
+"The platform assumes no liability for user-generated content.","liability"
+"Each party shall be solely liable for its own employees and subcontractors.","liability"
+"The company shall not be liable for any losses arising from regulatory changes.","liability"
+"Liability arising from a breach of data protection laws shall not be capped.","liability"
+"The aggregated liability of the vendor shall not exceed the fees paid in the last 3 months.","liability"
+"Neither party shall be liable for failure to perform obligations caused by a third party.","liability"
+"Claims for liability must be made in writing within 12 months of the event.","liability"
+"The supplier shall not be liable for indirect losses under any circumstances.","liability"
+"The client accepts all liability for misuse of the licensed software.","liability"
+"The receiving party shall sign an NDA before accessing confidential data.","confidentiality"
+"Confidential information shared during negotiations shall not be used for any other purpose.","confidentiality"
+"Any confidential data stored electronically must be encrypted and access-controlled.","confidentiality"
+"Disclosure of confidential information is permitted only under a valid court order.","confidentiality"
+"The parties agree that breach of confidentiality will cause irreparable harm.","confidentiality"
+"Confidentiality obligations apply to all employees, agents, and subcontractors.","confidentiality"
+"The confidentiality clause shall remain in force regardless of how this agreement ends.","confidentiality"
+"Any confidential information disclosed must be marked or identified as such in writing.","confidentiality"
+"The receiving party shall promptly return or destroy all confidential materials upon request.","confidentiality"
+"The duty of confidentiality shall not apply to information disclosed with prior written consent.","confidentiality"
+"Staff with access to confidential data must complete mandatory confidentiality training.","confidentiality"
+"This agreement shall constitute the entire NDA between the parties regarding the disclosed information.","confidentiality"
+"The recipient shall notify the discloser immediately upon becoming aware of any legal obligation to disclose.","confidentiality"
+"Confidential information shall not be reverse engineered under any circumstances.","confidentiality"
+"The disclosure of aggregated, anonymised data does not constitute a breach of confidentiality.","confidentiality"
+"Any action arising under this agreement must be brought in the courts of Hong Kong.","governing_law"
+"The parties agree that this agreement shall be construed under Swiss law.","governing_law"
+"This agreement shall be governed by the laws of the State of Washington, USA.","governing_law"
+"The legal relationship of the parties is governed by English law.","governing_law"
+"All matters relating to interpretation shall be resolved under the laws of India.","governing_law"
+"The venue for any legal proceedings shall be the courts of the State of Georgia.","governing_law"
+"This contract is governed by the laws of the Republic of Ireland.","governing_law"
+"The parties consent to jurisdiction in the courts of Ontario, Canada.","governing_law"
+"The agreement shall be construed under the laws of the Kingdom of Saudi Arabia.","governing_law"
+"All legal matters shall be governed by the statutory laws of France.","governing_law"
+"Disputes shall be decided under the laws of Japan without regard to conflict of law rules.","governing_law"
+"This agreement is subject to the laws of the Netherlands.","governing_law"
+"The parties agree that the law of New South Wales, Australia, governs this contract.","governing_law"
+"Any disputes arising under this agreement shall be governed by the laws of Brazil.","governing_law"
+"This agreement is governed by the laws of the State of Michigan.","governing_law"
+"The client shall indemnify the vendor against claims arising from incorrect data provided by the client.","indemnification"
+"The licensor shall indemnify the licensee from any third-party patent infringement claims.","indemnification"
+"The contractor shall indemnify the client for regulatory fines resulting from non-compliance.","indemnification"
+"The indemnified party shall cooperate fully in the defense of any indemnified claim.","indemnification"
+"The supplier shall indemnify the buyer against any product recall costs.","indemnification"
+"Indemnification obligations include court costs, legal fees, and settlement amounts.","indemnification"
+"The company shall indemnify employees for actions taken in good faith during their employment.","indemnification"
+"Either party shall indemnify the other if its breach causes the other to be sued by a third party.","indemnification"
+"The contractor shall indemnify the client against any environmental liability arising from the work.","indemnification"
+"Indemnification shall extend to affiliates, officers, directors, and employees of the indemnified party.","indemnification"
+"Prompt notice of any claim must be given to trigger the other party's indemnification obligations.","indemnification"
+"The vendor shall indemnify the client against losses arising from a data breach caused by vendor.","indemnification"
+"Indemnification payments shall be made within 30 days after a final judgment or settlement.","indemnification"
+"The indemnifying party shall not settle any claim without prior written consent of the indemnified party.","indemnification"
+"Each party's indemnification obligations shall survive the termination of this agreement.","indemnification"
+"The company shall retain full ownership of any algorithms developed under this contract.","intellectual_property"
+"The contractor grants the client a perpetual, irrevocable license to use all deliverables.","intellectual_property"
+"No license is granted to use the trade secrets outside the scope of this agreement.","intellectual_property"
+"The employee must disclose all inventions conceived during employment to the employer.","intellectual_property"
+"The licensor reserves all rights not expressly granted under this license.","intellectual_property"
+"All graphics, designs, and digital assets created for the client are works-for-hire.","intellectual_property"
+"The client may not sublicense the software without the express written consent of the licensor.","intellectual_property"
+"Upon project completion, the contractor waives all moral rights in the delivered work.","intellectual_property"
+"Any background IP owned by either party before the contract date remains that party's property.","intellectual_property"
+"The client shall not modify, adapt, or create derivative works based on the provided software.","intellectual_property"
+"All branding materials developed for the client become the client's exclusive property.","intellectual_property"
+"Open-source components used in deliverables must be disclosed and approved before use.","intellectual_property"
+"The licensee shall not register any trademark that is confusingly similar to the licensor's marks.","intellectual_property"
+"The licensor warrants that it has full right and title to grant the licenses herein.","intellectual_property"
+"Source code developed under this contract shall be escrowed with a reputable third party.","intellectual_property"
+"All claims shall be submitted to final and binding arbitration in New York.","dispute_resolution"
+"Before arbitration, the parties agree to attempt good-faith negotiation for 30 days.","dispute_resolution"
+"The arbitrator shall have authority to award injunctive relief and monetary damages.","dispute_resolution"
+"Arbitration awards may be enforced in any court of competent jurisdiction.","dispute_resolution"
+"The parties agree to keep all arbitration proceedings and awards confidential.","dispute_resolution"
+"In the event of any dispute, each party shall bear its own costs of arbitration.","dispute_resolution"
+"Disputes under $10,000 shall be handled through small claims court at the claimant's option.","dispute_resolution"
+"Any controversy relating to this agreement shall be resolved by a single arbitrator.","dispute_resolution"
+"Both parties agree to negotiate in good faith before resorting to formal dispute mechanisms.","dispute_resolution"
+"The seat of arbitration shall be Geneva, Switzerland, under the UNCITRAL Rules.","dispute_resolution"
+"Either party may seek emergency interim relief from a court pending arbitration.","dispute_resolution"
+"The parties waive any right to appeal the arbitration award except on grounds of fraud.","dispute_resolution"
+"The limitation period for raising a dispute shall be twelve months from the date of the event.","dispute_resolution"
+"A three-member arbitration panel shall be constituted for disputes exceeding $500,000.","dispute_resolution"
+"All discovery in arbitration shall be limited to documents directly relevant to the dispute.","dispute_resolution"
+"A party affected by force majeure must take all reasonable steps to minimize the impact.","force_majeure"
+"Flood, earthquake, fire, and lightning are categorized as force majeure events.","force_majeure"
+"Supply chain disruptions caused by sanctions shall be treated as force majeure.","force_majeure"
+"The party invoking force majeure must provide written notice within 48 hours of the event.","force_majeure"
+"Force majeure extends the contract deadline by the duration of the event.","force_majeure"
+"Internet or telecommunications outages caused by third parties are force majeure events.","force_majeure"
+"A national state of emergency declared by a government constitutes a force majeure event.","force_majeure"
+"If force majeure prevents performance for more than 30 days, either party may exit the contract.","force_majeure"
+"Neither party shall be penalized for delays attributed to force majeure, provided notice is given.","force_majeure"
+"Currency exchange controls imposed by any government shall be treated as a force majeure event.","force_majeure"
+"The force majeure clause does not cover events that could have been prevented by reasonable precautions.","force_majeure"
+"Strikes and lockouts within the party's own organization do not qualify as force majeure.","force_majeure"
+"Either party may renegotiate pricing if a force majeure event materially changes cost of performance.","force_majeure"
+"A party claiming force majeure shall maintain regular communication until normal performance resumes.","force_majeure"
+"Pandemic-related travel bans and border closures qualify as force majeure events under this agreement.","force_majeure"
+"The employee shall not engage in consultancy with a direct competitor for 18 months after termination.","non_compete"
+"Non-compete restrictions are limited to the specific industry in which the company operates.","non_compete"
+"The contractor shall not solicit the company's clients for personal gain after this agreement.","non_compete"
+"The non-compete clause is enforceable only to the extent permitted by applicable law.","non_compete"
+"The contractor agrees not to assist, fund, or invest in any competing business for 12 months.","non_compete"
+"The employee shall not use knowledge of trade secrets to benefit a competitor after departure.","non_compete"
+"A breach of the non-compete shall entitle the company to apply for injunctive relief without notice.","non_compete"
+"Geographic scope of the non-compete is limited to countries where the company actively operates.","non_compete"
+"The non-solicitation clause prohibits approaching any employee of the company for hire for 24 months.","non_compete"
+"Key personnel must sign separate non-compete agreements as a condition of their employment.","non_compete"
+"The non-compete clause shall terminate if the company is acquired by a competitor.","non_compete"
+"The contractor acknowledges receiving adequate consideration in exchange for the non-compete obligation.","non_compete"
+"The parties agree the non-compete restrictions are reasonable to protect legitimate business interests.","non_compete"
+"The supplier warrants that all goods conform to the agreed specifications and are fit for purpose.","warranties"
+"The software is warranted to operate without critical errors for 6 months post-delivery.","warranties"
+"Each party warrants that it is not party to any agreement that conflicts with this contract.","warranties"
+"The vendor provides no warranty for defects arising from misuse or modification by the client.","warranties"
+"The contractor warrants that all work shall comply with applicable laws and industry standards.","warranties"
+"All warranties given in this agreement are in addition to rights provided under consumer protection laws.","warranties"
+"The platform warranties exclude issues arising from force majeure or third-party interference.","warranties"
+"The company warrants that services shall meet a monthly uptime of 99.9%.","warranties"
+"Any breach of warranty must be reported within 30 days of discovery to be actionable.","warranties"
+"The licensor warrants that the software does not contain any intentional backdoors or malicious code.","warranties"
+"The vendor's warranty obligations survive delivery for a period of 12 months.","warranties"
+"No implied warranty of merchantability applies to services provided under this agreement.","warranties"
+"The contractor warrants that all data migrations will be completed without loss or corruption.","warranties"
+"Time is of the essence in the performance of all obligations under this agreement.","other"
+"This agreement may be signed in electronic format and shall be legally binding.","other"
+"The parties shall keep each other informed of all material developments affecting this agreement.","other"
+"No partnership, joint venture, or agency relationship is created by this agreement.","other"
+"Any publicity regarding this agreement requires prior written approval from both parties.","other"
+"All notices under this agreement shall be sent by email with read receipt or registered post.","other"
+"The rights and obligations under this agreement are personal and may not be assigned.","other"
+"This agreement shall take effect on the date it is signed by both parties.","other"
+"Neither party shall make press releases about this agreement without mutual written consent.","other"
+"Any omission or delay in exercising a right shall not constitute a waiver.","other"
+"The parties agree to execute any further documents necessary to give effect to this agreement.","other"
+"Each party shall comply with all applicable laws in performing its obligations.","other"
+"This agreement is not intended to create any rights enforceable by third parties.","other"
+"The exhibits and schedules attached hereto are incorporated into and form part of this agreement.","other"
+"Any amendment to this agreement must be agreed upon in writing by both parties.","other"
+"Either party may terminate this Agreement by providing sixty (60) days prior written notice to the other party. Upon receipt of such notice, the parties shall cooperate to ensure an orderly transition of all work in progress.","termination"
+"This Agreement shall terminate automatically and without notice upon the filing of a voluntary or involuntary petition in bankruptcy by or against either party. Any licenses granted hereunder shall cease immediately upon such termination.","termination"
+"The Company reserves the right to terminate this Agreement immediately upon written notice if the Contractor breaches any material term and fails to cure such breach within fifteen (15) business days of receiving written notice of the breach.","termination"
+"In the event that either party undergoes a change of control, merger, or acquisition, the other party shall have the right to terminate this Agreement within thirty (30) days of receiving notice of such transaction.","termination"
+"Upon termination of this Agreement for any reason, Contractor shall promptly deliver to Client all work product, documentation, and materials developed under this Agreement, regardless of whether such work is complete.","termination"
+"Either party may terminate this Agreement without cause upon ninety (90) days written notice. In the event of termination without cause, Client shall compensate Contractor for all work performed up to the effective date of termination.","termination"
+"This Agreement shall terminate upon successful delivery and written acceptance of all Deliverables by the Client. Final payment shall become due and payable within ten (10) days of such acceptance.","termination"
+"The Company may terminate this Agreement immediately if the employee is convicted of a criminal offense, engages in willful misconduct, or materially violates the Company's code of conduct.","termination"
+"If a Force Majeure event continues for more than sixty (60) consecutive days, either party may terminate this Agreement upon written notice without any liability to the other party.","termination"
+"Termination of this Agreement shall not affect any rights or obligations that have accrued prior to the effective date of termination, including any outstanding payment obligations.","termination"
+"The Licensor reserves the right to terminate this license agreement immediately if the Licensee sublicenses, transfers, or assigns the license without prior written authorization.","termination"
+"The Client may terminate for convenience at any time by providing thirty (30) days advance written notice. A pro-rated kill fee of 20% of the remaining contract value shall apply to termination for convenience.","termination"
+"In the event of non-payment, the Service Provider may suspend services after providing seven (7) days notice and may terminate the Agreement after an additional fifteen (15) days of continued non-payment.","termination"
+"Either party may elect to terminate this Agreement if the other party materially breaches a warranty and such breach remains uncured for a period of twenty-one (21) days following written notice.","termination"
+"Upon expiration of the initial term, this Agreement shall automatically renew for successive one-year periods unless either party provides written notice of non-renewal at least sixty (60) days before the end of the then-current term.","termination"
+"Termination shall not relieve either party of its confidentiality obligations, which shall survive for a period of five (5) years following the date of termination.","termination"
+"The Company may immediately terminate this Agreement upon discovery that the Contractor misrepresented its qualifications, experience, or regulatory compliance status during the contracting process.","termination"
+"Any termination initiated by the Client without cause within the first ninety (90) days of this Agreement shall trigger a minimum cancellation fee equal to thirty percent (30%) of the total project value.","termination"
+"Upon written notice of termination, all access credentials, proprietary systems access, and company equipment must be returned by the terminated party within forty-eight (48) hours.","termination"
+"This Agreement may be terminated by mutual written agreement of both parties at any time, whereupon all outstanding obligations shall be settled within fifteen (15) business days.","termination"
+"Client shall pay all undisputed invoices within thirty (30) days of receipt. Invoices overdue by more than fifteen (15) days shall accrue interest at the rate of 1.5% per month on the outstanding balance.","payment_terms"
+"Contractor shall submit invoices on the first business day of each calendar month for services rendered in the preceding month. Payment shall be made via bank wire transfer within fifteen (15) business days of invoice receipt.","payment_terms"
+"All fees under this Agreement are exclusive of applicable sales taxes, VAT, or similar charges. The Client shall be solely responsible for all such taxes unless expressly stated otherwise in writing.","payment_terms"
+"The retainer fee of fifteen thousand dollars ($15,000) per month is due and payable in advance on the first day of each month. Failure to pay the retainer by the fifth day of the month shall constitute a material breach.","payment_terms"
+"Upon execution of this Agreement, the Client shall pay a non-refundable deposit of twenty-five percent (25%) of the total project value. The remaining balance shall be paid in equal monthly installments over the contract term.","payment_terms"
+"In the event of payment disputes, the Client must notify the Contractor in writing within ten (10) business days of receiving the invoice. Undisputed amounts must be paid by the original due date regardless of any dispute.","payment_terms"
+"Contractor's hourly rate of two hundred dollars ($200) per hour is subject to annual adjustment. The Contractor shall provide no less than sixty (60) days written notice prior to implementing any rate increase.","payment_terms"
+"All milestone payments shall become due upon the Client's written approval of the associated deliverable. Client shall have seven (7) business days to approve or reject each deliverable; failure to respond shall constitute deemed approval.","payment_terms"
+"The Vendor shall issue a final invoice within fifteen (15) days of project completion. The Client shall make final payment within thirty (30) days of receiving the final invoice and all accompanying documentation.","payment_terms"
+"Expenses for pre-approved travel, accommodation, and materials shall be reimbursed within twenty-one (21) days of submission of itemized receipts. No expense exceeding five hundred dollars ($500) shall be reimbursed without prior written approval.","payment_terms"
+"A setup fee of two thousand dollars ($2,000) is due upon signing this Agreement. Thereafter, a monthly subscription fee of eight hundred dollars ($800) shall be billed on a recurring basis.","payment_terms"
+"In the event the Client requests additional services outside the agreed scope, such services shall be quoted and invoiced separately at the agreed hourly rate and are payable within fourteen (14) days of invoice.","payment_terms"
+"All payments shall be made in US dollars unless otherwise agreed in writing. Currency conversion losses resulting from payment in alternative currencies shall be borne by the paying party.","payment_terms"
+"The Client agrees to maintain a valid payment method on file at all times. Failure to maintain a valid payment method for more than ten (10) days may result in immediate suspension of services.","payment_terms"
+"Invoices not disputed within fourteen (14) calendar days of issuance shall be deemed accepted and valid. The Client waives the right to dispute any invoice after this period has elapsed.","payment_terms"
+"A late payment fee of one hundred dollars ($100) per day shall be charged for each calendar day an invoice remains unpaid beyond the agreed payment terms.","payment_terms"
+"Performance bonuses outlined in Schedule A shall be payable within thirty (30) days of achievement of the stipulated KPIs, as verified in writing by the Client.","payment_terms"
+"Progress payments shall be made at twenty-five percent (25%) intervals tied to project milestones: upon signing, upon delivery of initial designs, upon delivery of final prototype, and upon project completion.","payment_terms"
+"The agreed fixed fee of fifty thousand dollars ($50,000) for the project is inclusive of all labor, materials, and expenses. No additional fees shall be charged unless a formal change order is approved in writing.","payment_terms"
+"All payments received shall be applied first to any outstanding interest or late fees, then to the oldest unpaid invoices, and finally to the most recent invoices.","payment_terms"
+"In no event shall either party be liable to the other for any indirect, incidental, special, consequential, or punitive damages arising out of or related to this Agreement, even if advised of the possibility of such damages.","liability"
+"The aggregate liability of either party under this Agreement shall not exceed the total fees paid by the Client to the Contractor in the twelve (12) months immediately preceding the event giving rise to the claim.","liability"
+"Neither party shall be liable for loss of profits, loss of revenue, loss of data, or loss of goodwill, regardless of whether such losses arise from contract, tort, or any other legal theory.","liability"
+"The Vendor's liability for defective software shall be limited to re-performance of the affected service. If re-performance is not feasible within a reasonable time, the Vendor may offer a partial refund at its discretion.","liability"
+"Notwithstanding any limitation of liability in this Agreement, neither party shall be entitled to limit its liability for death or personal injury caused by gross negligence or willful misconduct.","liability"
+"The Client assumes full liability for any unauthorized modifications made to the software platform. The Vendor shall bear no responsibility for failures, data loss, or security breaches resulting from such modifications.","liability"
+"Each party's liability to the other for breach of data protection obligations shall not be subject to the general liability cap stated herein, and shall instead be unlimited.","liability"
+"The platform provider disclaims all liability for content uploaded by users and shall not be held responsible for any third-party claims arising from user-generated content.","liability"
+"Any claim for liability must be brought within twelve (12) months from the date on which the claimant first became aware of the facts giving rise to the claim, failing which the claim shall be permanently barred.","liability"
+"Neither party shall be liable for regulatory penalties or fines imposed by government authorities as a result of the other party's failure to comply with applicable laws and regulations.","liability"
+"The total liability of the Supplier for damage to the Client's property shall not exceed the replacement cost of the damaged item at the time of the loss, excluding sentimental or business value.","liability"
+"The Service Provider shall not be liable for any interruption of services caused by third-party infrastructure failures, including failures of cloud hosting providers, internet service providers, or telecommunications networks.","liability"
+"Liability for fraudulent misrepresentation is not subject to any limitation or exclusion set out in this Agreement, and shall be recoverable in full by the affected party.","liability"
+"Each party shall take reasonable steps to mitigate its losses and shall not be entitled to recover losses that could have been avoided through the exercise of reasonable care.","liability"
+"The Contractor shall carry professional indemnity insurance of no less than one million dollars ($1,000,000) per claim, and shall provide evidence of such coverage upon request by the Client.","liability"
+"The Client's sole and exclusive remedy for any defect in the delivered software shall be correction of the defect by the Vendor, and in no event shall the Vendor's liability exceed the license fees paid.","liability"
+"Neither party shall be liable for loss or damage caused by events of force majeure as further defined under Section 12 of this Agreement.","liability"
+"In the event of a data breach attributable to the Vendor's negligence, the Vendor shall be liable for the direct costs of notifying affected parties and implementing remediation measures.","liability"
+"The platform's liability for failed transactions or payment processing errors shall be limited to the value of the failed transaction and shall not include consequential economic losses.","liability"
+"Neither party shall be liable for the acts or omissions of any independent subcontractor, unless such acts were carried out under the direct instruction of that party.","liability"
+"Each party agrees to keep strictly confidential all non-public information disclosed by the other party in connection with this Agreement, and shall use such information solely for the purposes contemplated herein.","confidentiality"
+"The receiving party shall restrict access to Confidential Information to those employees and contractors who have a legitimate need to know such information and who are bound by confidentiality obligations at least as protective as those set forth herein.","confidentiality"
+"Any Confidential Information disclosed in connection with this Agreement shall be prominently marked 'Confidential' or, if disclosed verbally, confirmed in writing within five (5) business days of disclosure.","confidentiality"
+"In the event the receiving party is compelled by law or court order to disclose Confidential Information, it shall provide prompt written notice to the disclosing party to allow the disclosing party to seek a protective order or other appropriate remedy.","confidentiality"
+"Confidential Information shall be stored in encrypted format on password-protected systems. The receiving party shall implement industry-standard administrative, technical, and physical safeguards to prevent unauthorized access or disclosure.","confidentiality"
+"Upon termination of this Agreement, the receiving party shall promptly return or certifiably destroy all Confidential Information and any copies thereof, and shall provide written certification of such destruction within ten (10) business days.","confidentiality"
+"The duty of confidentiality shall survive the termination or expiration of this Agreement for a period of five (5) years and shall be binding on the successors and assigns of both parties.","confidentiality"
+"The parties acknowledge that any breach of this confidentiality clause would cause irreparable harm, and the disclosing party shall be entitled to seek injunctive relief in addition to any other remedies available at law.","confidentiality"
+"Confidential Information shall not include information that: (a) is or becomes generally known to the public; (b) was already known to the receiving party; (c) is received from a third party without restriction; or (d) is independently developed.","confidentiality"
+"The Company's trade secrets, customer lists, pricing strategies, and technical documentation are designated as Confidential Information and are subject to the highest level of protection under this Agreement.","confidentiality"
+"Each employee with access to Confidential Information shall execute an individual non-disclosure agreement and shall complete mandatory privacy and data protection training before being granted access.","confidentiality"
+"The receiving party shall not use Confidential Information for competitive intelligence, marketing analysis, or any purpose that would provide a commercial advantage at the disclosing party's expense.","confidentiality"
+"The parties agree that the existence and terms of this Agreement are themselves confidential and shall not be disclosed to any third party without prior written consent of both parties.","confidentiality"
+"The receiving party shall notify the disclosing party in writing within forty-eight (48) hours of discovering any unauthorized access to, or disclosure of, Confidential Information.","confidentiality"
+"The parties agree that aggregated, anonymized data that does not identify either party shall not be considered Confidential Information and may be used freely.","confidentiality"
+"The receiving party shall not copy, reproduce, or create derivative documents based on Confidential Information except as strictly necessary to fulfill the purposes of this Agreement.","confidentiality"
+"All Confidential Information provided in physical format shall be stored in secured, access-controlled facilities and shall be logged in and tracked throughout its lifecycle.","confidentiality"
+"The confidentiality obligations set forth in this Agreement are independent of, and shall not be limited by, any agreement relating to data protection or privacy between the parties.","confidentiality"
+"The parties shall conduct periodic audits of their information security practices to ensure continued compliance with the confidentiality obligations contained herein.","confidentiality"
+"Disclosure of Confidential Information to the party's legal counsel for purposes of seeking legal advice is permitted, provided such counsel is themselves bound by equivalent confidentiality obligations.","confidentiality"
+"This Agreement shall be governed by and construed in accordance with the laws of the State of New York, without regard to conflict of law provisions. Any legal action or proceeding shall be brought exclusively in the courts of New York County.","governing_law"
+"The parties agree that the laws of England and Wales shall govern this Agreement and all disputes arising therefrom. The parties irrevocably submit to the exclusive jurisdiction of the English courts.","governing_law"
+"This Agreement is governed by the federal laws of the United States and the laws of the State of California. The parties consent to personal jurisdiction in the Superior Court of Los Angeles County.","governing_law"
+"In the event of any ambiguity, this Agreement shall be interpreted in accordance with the laws of the Republic of Singapore, and the courts of Singapore shall have exclusive jurisdiction over all disputes.","governing_law"
+"The applicable law for matters arising under this Agreement shall be the law of Germany, excluding the UN Convention on Contracts for the International Sale of Goods (CISG).","governing_law"
+"This Agreement and any non-contractual obligations arising out of or in connection with it shall be governed by the laws of the Province of British Columbia, Canada.","governing_law"
+"The parties agree that disputes arising under this Agreement shall be construed under the laws of the Commonwealth of Australia, particularly the law of the State of Victoria.","governing_law"
+"In the event of a conflict between the laws of different jurisdictions, the laws of the State of Delaware shall take precedence for matters relating to corporate governance and the parties' legal relationships.","governing_law"
+"The legal validity, interpretation, and performance of this Agreement shall be governed by the laws of Switzerland, and any disputes shall be settled in accordance with Swiss law.","governing_law"
+"This Agreement shall be construed and enforced in accordance with the laws of the United Arab Emirates and, where applicable, the laws of the Dubai International Financial Centre (DIFC).","governing_law"
+"The parties acknowledge and agree that the choice of law herein is a material term of this Agreement and was a significant factor in each party's decision to enter into this Agreement.","governing_law"
+"Notwithstanding the governing law clause, nothing in this Agreement shall prevent either party from seeking emergency injunctive relief in any jurisdiction where assets or operations are located.","governing_law"
+"This Agreement is governed by the laws of Japan. Any disputes not resolved by negotiation shall be submitted to the Tokyo District Court as the court of first instance.","governing_law"
+"All rights and obligations under this Agreement shall be interpreted in accordance with the laws of India, and the courts of Mumbai shall have exclusive jurisdiction.","governing_law"
+"The parties agree that the laws of France shall govern this Agreement. The language of all proceedings shall be French unless the parties mutually agree to conduct them in English.","governing_law"
+"The Vendor shall indemnify, defend, and hold harmless Client and its officers, directors, employees, and agents from and against any and all claims, losses, damages, and expenses arising out of the Vendor's negligence or willful misconduct.","indemnification"
+"Each party shall indemnify the other party against all third-party claims arising from its own breach of this Agreement, including reasonable attorneys' fees and court costs incurred in connection with any such claim.","indemnification"
+"The Contractor shall indemnify the Client against all claims, demands, and proceedings that arise as a result of infringement of any third-party intellectual property rights by the Contractor's deliverables.","indemnification"
+"Client shall indemnify the Vendor for claims arising from Client's use of the Vendor's platform in a manner inconsistent with the Terms of Service, including data misuse and unauthorized access.","indemnification"
+"The indemnifying party shall promptly notify the indemnified party in writing of any claim and shall assume the defense thereof at its own expense, with counsel reasonably acceptable to the indemnified party.","indemnification"
+"The Supplier agrees to indemnify the Buyer for all product liability claims, including bodily injury, property damage, and recall costs, arising from defects in goods delivered under this Agreement.","indemnification"
+"The indemnified party shall cooperate fully with the indemnifying party in the defense of any claim and shall not make any admission, settlement, or compromise without the indemnifying party's prior written consent.","indemnification"
+"Indemnification obligations under this Agreement shall extend to the affiliates, subsidiaries, officers, directors, shareholders, and employees of the indemnified party.","indemnification"
+"The indemnification obligations set forth in this Agreement shall survive termination or expiration of the Agreement and shall remain in full force and effect for any claims arising from events during the term.","indemnification"
+"Each party's indemnification obligation shall be proportionally reduced to the extent the loss is attributable to the indemnified party's own negligence, misconduct, or breach of contract.","indemnification"
+"The Licensor shall indemnify the Licensee for any claim that the licensed software, when used as permitted, infringes any patent, copyright, trademark, or trade secret right of a third party.","indemnification"
+"The Contractor shall indemnify the Client against all costs, fines, and penalties arising from the Contractor's failure to comply with applicable labor laws, health and safety regulations, and industry standards.","indemnification"
+"Indemnification payments shall be made within thirty (30) days of a final, non-appealable judgment or a settlement approved in writing by both parties.","indemnification"
+"The indemnifying party shall be entitled to tender the defense of an indemnified claim at any time following receipt of notice, and upon such tender, the indemnified party's right to control the defense shall cease.","indemnification"
+"The Company shall maintain adequate directors and officers (D&O) insurance and shall indemnify all current and former directors and officers against personal liability incurred in the performance of their corporate duties.","indemnification"
+"The Vendor's indemnification obligations shall not apply to claims arising from the Client's modification of the software, integration with unauthorized systems, or use in conjunction with non-approved third-party products.","indemnification"
+"Either party seeking indemnification must provide the indemnifying party with prompt written notice and must not take any action that could prejudice the indemnifying party's ability to defend the claim.","indemnification"
+"The Distributor shall indemnify the Manufacturer against all claims arising from negligent or improper marketing, distribution, or resale of the Manufacturer's products within the Distribution Territory.","indemnification"
+"Each party shall indemnify and hold harmless the other from and against losses resulting from a proven breach of any applicable data protection or privacy law by that party.","indemnification"
+"The obligations to indemnify stated in this Agreement are independent of, and in addition to, any limitation of liability caps that apply to other types of claims under this Agreement.","indemnification"
+"All inventions, developments, software, designs, and other work product conceived or created by the Contractor in the course of performing Services under this Agreement shall be deemed works made for hire and shall be the exclusive property of the Client.","intellectual_property"
+"Each party retains full ownership of all intellectual property developed prior to the commencement of this Agreement. Nothing herein shall be construed as transferring ownership of pre-existing intellectual property.","intellectual_property"
+"The Licensor grants to the Licensee a non-exclusive, non-transferable, revocable license to use the proprietary software solely for internal business purposes during the term of this Agreement.","intellectual_property"
+"Upon full payment of all fees, the Contractor irrevocably assigns to the Client all copyright, patent rights, and other intellectual property rights in and to all deliverables created under this Agreement.","intellectual_property"
+"The Licensee shall not reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of any proprietary software provided under this Agreement.","intellectual_property"
+"Any feedback, suggestions, or improvements provided by the Client regarding the Vendor's products or services shall be deemed the exclusive property of the Vendor, without any obligation of compensation to the Client.","intellectual_property"
+"The Vendor warrants that the software, when used in accordance with this Agreement, does not and will not infringe the intellectual property rights of any third party in any jurisdiction.","intellectual_property"
+"All trademarks, service marks, logos, and brand names used by either party shall remain the exclusive property of that party, and no license is granted to use the other party's marks without express written permission.","intellectual_property"
+"The Contractor agrees to promptly disclose to the Client any inventions or improvements developed using Client's resources, equipment, or confidential information during the term of this Agreement.","intellectual_property"
+"Open-source software incorporated into the deliverables must be identified in writing prior to use. The use of any open-source software subject to copyleft licenses must be approved in advance by the Client.","intellectual_property"
+"Any derivative works created by the Licensee based on the Licensor's software shall be owned jointly by both parties, and neither party may commercialize such derivative works without the other's written consent.","intellectual_property"
+"The Vendor shall maintain comprehensive records of all third-party intellectual property licenses incorporated into the deliverables and shall provide copies of such licenses to the Client upon request.","intellectual_property"
+"The Client grants the Contractor a limited license to use Client's trademarks and branding materials solely for the purpose of performing the agreed services and for no other purpose whatsoever.","intellectual_property"
+"Upon expiration or termination of this Agreement, all licenses granted hereunder shall immediately terminate, and the Licensee shall cease all use of the licensed intellectual property.","intellectual_property"
+"The Contractor shall not use, publish, or reference the Client's name, logo, or intellectual property in any marketing, promotional, or public-facing materials without prior written consent.","intellectual_property"
+"All source code, documentation, and proprietary algorithms developed as part of the project shall be transferred to the Client via a secure code repository upon project completion.","intellectual_property"
+"Where Contractor engages subcontractors to perform any portion of the Services, Contractor shall ensure that all subcontractors assign their intellectual property rights to Contractor or directly to Client.","intellectual_property"
+"The moral rights of the creator in any creative works delivered under this Agreement are hereby irrevocably waived to the fullest extent permitted by applicable law.","intellectual_property"
+"The Licensor may audit the Licensee's use of the licensed software up to once per year upon thirty (30) days notice to verify compliance with the scope of the license granted.","intellectual_property"
+"The parties agree that any jointly developed intellectual property shall be owned equally, and neither party shall apply for patent protection on such jointly developed inventions without the other's written consent.","intellectual_property"
+"Any dispute, controversy, or claim arising out of or relating to this Agreement shall first be referred to senior representatives of both parties for good-faith negotiation for a period of thirty (30) days before any formal proceedings are initiated.","dispute_resolution"
+"If negotiation fails to resolve the dispute within the prescribed period, the parties agree to submit the matter to non-binding mediation under the rules of the International Chamber of Commerce (ICC).","dispute_resolution"
+"Should mediation fail, all disputes shall be finally resolved by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules, and judgment on the award may be entered in any court of competent jurisdiction.","dispute_resolution"
+"The arbitration shall be conducted before a sole arbitrator mutually agreed upon by both parties, or, failing agreement, appointed by the AAA. The arbitrator's decision shall be final, binding, and non-appealable.","dispute_resolution"
+"Arbitration proceedings shall be confidential. The parties agree not to disclose the existence, content, or outcome of any arbitration proceedings without the prior written consent of both parties.","dispute_resolution"
+"Each party shall bear its own costs of arbitration unless the arbitrator determines that one party acted in bad faith, in which case the arbitrator may award attorneys' fees and costs to the prevailing party.","dispute_resolution"
+"The parties irrevocably waive any right to a jury trial in connection with any disputes arising under this Agreement. All disputes shall be resolved exclusively through the arbitration mechanism described herein.","dispute_resolution"
+"Notwithstanding the arbitration clause, either party may seek emergency or interim injunctive relief in any court of competent jurisdiction to prevent irreparable harm without first exhausting the dispute resolution procedure.","dispute_resolution"
+"The seat of arbitration shall be London, England. The arbitration shall be conducted in English under the rules of the London Court of International Arbitration (LCIA).","dispute_resolution"
+"Claims below ten thousand dollars ($10,000) shall be resolved through binding expedited arbitration under simplified rules. Claims above this threshold shall follow standard AAA Commercial Arbitration procedures.","dispute_resolution"
+"The statute of limitations for filing any claim under this Agreement shall be two (2) years from the date the claiming party first becomes aware of the facts giving rise to the claim.","dispute_resolution"
+"In the event of a dispute regarding project milestones, the parties agree to appoint a mutually acceptable independent technical expert whose determination shall be final and binding.","dispute_resolution"
+"The parties agree that class action proceedings and class-wide arbitration are expressly prohibited. Any claims must be brought individually and not as part of any class or representative action.","dispute_resolution"
+"All documents, correspondence, and evidence submitted in connection with any arbitration proceedings shall be treated as confidential attorney-client communications to the fullest extent permitted by law.","dispute_resolution"
+"Any deadlines specified in this Agreement that are violated shall give rise to a right to seek specific performance through arbitration rather than damages, where monetary compensation would be inadequate.","dispute_resolution"
+"The parties agree that the prevailing party in any arbitration shall be entitled to recover its reasonable attorneys' fees, expert fees, and arbitration costs from the non-prevailing party.","dispute_resolution"
+"Disputes related solely to the calculation or payment of invoiced amounts shall be resolved through an expedited review by a mutually agreed-upon independent certified public accountant.","dispute_resolution"
+"Either party may escalate a dispute to executive leadership as an alternative to formal dispute resolution, provided that escalation occurs within sixty (60) days of the dispute arising.","dispute_resolution"
+"All arbitration awards shall be denominated in US dollars and shall be payable within thirty (30) days of the award being rendered.","dispute_resolution"
+"Pending resolution of any dispute, both parties agree to continue performing their obligations under this Agreement to the extent reasonably practicable.","dispute_resolution"
+"Neither party shall be held liable or responsible for failure to perform its obligations under this Agreement to the extent such failure is caused by a Force Majeure Event, including but not limited to natural disasters, acts of war, pandemics, government-imposed restrictions, and labor strikes.","force_majeure"
+"A party invoking a Force Majeure Event shall notify the other party in writing within forty-eight (48) hours of the occurrence and shall provide a description of the event, its expected duration, and the obligations affected.","force_majeure"
+"If a Force Majeure Event continues for thirty (30) or more consecutive days, either party may elect to terminate this Agreement without penalty, with a written notice period of fifteen (15) days.","force_majeure"
+"The party claiming Force Majeure shall use commercially reasonable efforts to overcome or circumvent the Force Majeure Event and shall resume performance as soon as it becomes reasonably practicable to do so.","force_majeure"
+"Force Majeure shall not excuse a party from its obligation to make payments that were due and payable prior to the occurrence of the Force Majeure Event.","force_majeure"
+"Cyberattacks, ransomware events, and critical infrastructure failures caused by third parties shall be treated as Force Majeure Events under this Agreement, provided that the affected party has implemented industry-standard security measures.","force_majeure"
+"The Force Majeure clause shall not apply to events that were foreseeable at the time of contract execution, or that resulted from the negligence or willful misconduct of the affected party.","force_majeure"
+"If a Force Majeure Event leads to a material change in the cost of performance, the parties agree to negotiate in good faith to adjust the contract price within thirty (30) days of the event.","force_majeure"
+"Government export control regulations, trade embargoes, and economic sanctions that materially prevent performance shall constitute Force Majeure Events under this Agreement.","force_majeure"
+"Labor shortages, supply chain disruptions, and raw material unavailability attributable to a global health emergency shall be treated as qualifying Force Majeure Events.","force_majeure"
+"Any extension of time granted as a result of a Force Majeure Event shall not exceed the actual duration of the Force Majeure Event, and shall not be used to justify prolonged delay beyond that period.","force_majeure"
+"The affected party shall maintain detailed records of the Force Majeure Event and its impact on performance, which shall be made available to the other party upon request.","force_majeure"
+"Force Majeure Events include any failure of a third-party utility provider, cloud infrastructure, or telecommunications network that directly prevents the affected party from fulfilling its obligations.","force_majeure"
+"Flooding of the Contractor's primary facility, rendering it inoperable, shall be treated as a Force Majeure Event entitling the Contractor to an extended deadline without penalty.","force_majeure"
+"The parties agree that the occurrence of COVID-19 or any future declared pandemic recognized by the World Health Organization shall constitute a Force Majeure Event under this Agreement.","force_majeure"
+"The Employee agrees that during the term of employment and for a period of twenty-four (24) months thereafter, they shall not, directly or indirectly, engage in any business that competes with the Company in any market where the Company is actively operating.","non_compete"
+"The Contractor hereby agrees not to provide services to any direct competitor of the Company in the same service category for a period of twelve (12) months following the termination of this Agreement.","non_compete"
+"The non-solicitation restriction prohibits the Employee from directly or indirectly approaching any client, customer, or prospect of the Company with whom the Employee had material contact during the last twelve (12) months of employment.","non_compete"
+"The geographic scope of the non-compete obligation is limited to countries where the Company has an active customer base or commercially deployed product at the time of the Employee's departure.","non_compete"
+"The parties agree that the non-compete restrictions contained herein are reasonable and necessary to protect the Company's legitimate business interests, including its customer relationships, trade secrets, and goodwill.","non_compete"
+"In jurisdictions where non-compete restrictions are unenforceable, this clause shall be interpreted as narrowly as legally permissible to give effect to the parties' original intent.","non_compete"
+"The Employee shall not, for a period of eighteen (18) months following termination, recruit, hire, or assist in the recruitment of any current or former employee of the Company.","non_compete"
+"The Company may enforce the non-compete obligation by seeking injunctive relief, and the Employee acknowledges that monetary damages alone would be an inadequate remedy for breach of this clause.","non_compete"
+"The Contractor agrees that upon departure, they will not use proprietary knowledge of the Company's pricing model, product roadmap, or customer acquisition strategy for the benefit of any competing entity.","non_compete"
+"The non-compete obligations shall be suspended if the Company fails to make a required severance payment within ten (10) business days of the Employee's departure.","non_compete"
+"The Employee agrees to provide a list of any business activities they plan to engage in following termination within fourteen (14) days of departure, to facilitate an assessment of potential non-compete conflicts.","non_compete"
+"The non-compete clause shall be interpreted to apply separately in each jurisdiction where it is enforceable, such that its invalidity in one jurisdiction shall not affect its enforceability in others.","non_compete"
+"Executive-level employees shall be subject to an extended non-compete period of thirty-six (36) months owing to their access to sensitive strategic information and high-level customer relationships.","non_compete"
+"The Contractor agrees not to develop a substantially similar product or service using knowledge gained during the engagement for a period of twelve (12) months post-termination.","non_compete"
+"The Company shall pay the Employee a monthly non-compete allowance of two thousand dollars ($2,000) during the restricted period as consideration for compliance with this clause.","non_compete"
+"The Vendor warrants that the software platform shall perform materially in accordance with the functional specifications set forth in Exhibit A for a period of ninety (90) days following delivery.","warranties"
+"Each party represents and warrants that: (a) it has the full authority to enter into this Agreement; (b) this Agreement does not conflict with any other obligation; and (c) it shall comply with all applicable laws.","warranties"
+"The Contractor warrants that all personnel assigned to the project possess the professional qualifications, experience, and certifications necessary to perform the services to industry-standard quality.","warranties"
+"The Company provides no warranty, express or implied, that the service will be uninterrupted, error-free, or that defects will be corrected within a specified time frame.","warranties"
+"The Supplier warrants that all goods delivered are free from defects in materials and workmanship and conform to all applicable regulatory standards and certifications at the time of delivery.","warranties"
+"The Licensor warrants that the use of the licensed software in the manner contemplated by this Agreement will not infringe any patent, copyright, or trade secret right of any third party.","warranties"
+"The platform is provided 'as is' and 'as available.' To the maximum extent permitted by law, all implied warranties of merchantability, fitness for a particular purpose, and non-infringement are expressly disclaimed.","warranties"
+"The Developer warrants that all code delivered is original, does not incorporate any third-party open-source libraries with incompatible licenses, and does not contain known critical vulnerabilities at the time of delivery.","warranties"
+"Any breach of warranty must be reported in writing within thirty (30) days of discovery. Failure to report within this window shall constitute a waiver of the warranty claim.","warranties"
+"The Vendor's sole obligation in the event of a breach of warranty is, at its option, to repair, replace, or issue a credit for the non-conforming goods or services, which shall be the Client's exclusive remedy.","warranties"
+"The Contractor warrants that all data migration activities shall be completed without loss, corruption, or unauthorized alteration of any data, and shall conduct a full data integrity check before and after migration.","warranties"
+"The Company warrants that its service shall maintain an uptime of 99.5% per calendar month, measured on a twenty-four-hour, seven-day basis, excluding scheduled maintenance windows.","warranties"
+"The Seller warrants that it has good and marketable title to all goods sold under this Agreement and that such goods are free from any liens, encumbrances, or third-party claims.","warranties"
+"Warranty coverage under this Agreement shall not apply to defects caused by misuse, accident, unauthorized repair, modification, or use of the product in an environment outside the specified operating parameters.","warranties"
+"The service provider warrants that all methods employed in providing the services comply with generally accepted industry practices and applicable professional standards.","warranties"
+"This Agreement, together with all exhibits, schedules, and addenda attached hereto, constitutes the entire agreement between the parties with respect to its subject matter and supersedes all prior discussions, representations, and agreements.","other"
+"No amendment, modification, or waiver of any provision of this Agreement shall be effective unless made in writing and signed by authorized representatives of both parties.","other"
+"The parties are independent contractors. Nothing in this Agreement shall be construed to create an employment relationship, partnership, joint venture, or agency relationship between the parties.","other"
+"If any provision of this Agreement is found to be invalid, unenforceable, or contrary to applicable law, that provision shall be severed, and the remaining provisions shall continue in full force and effect.","other"
+"Failure of either party to exercise any right or remedy under this Agreement shall not be deemed a waiver of such right or remedy in the future, nor shall it affect any other rights or remedies available.","other"
+"This Agreement may not be assigned or transferred by either party without the prior written consent of the other party, which consent shall not be unreasonably withheld or delayed.","other"
+"All notices under this Agreement shall be in writing and delivered by certified mail, overnight courier, or email with confirmation of receipt to the addresses specified in the signature block.","other"
+"This Agreement may be executed in one or more counterparts, each of which shall be deemed an original and all of which together shall constitute one and the same instrument.","other"
+"The headings and titles used in this Agreement are for convenience only and shall not affect the interpretation or construction of any provision of this Agreement.","other"
+"Neither party shall issue any press release or public statement referencing the other party or this Agreement without prior written approval, which may be withheld at the receiving party's sole discretion.","other"
+"Time is of the essence with respect to all dates and deadlines in this Agreement. Any extension of time must be agreed in writing by both parties and shall not constitute a waiver of subsequent time obligations.","other"
+"Each party shall bear its own legal, accounting, and advisory costs incurred in connection with the negotiation and preparation of this Agreement, unless otherwise stated herein.","other"
+"This Agreement shall be binding upon and inure to the benefit of the parties and their respective heirs, administrators, legal representatives, successors, and permitted assigns.","other"
+"Where the context requires, words in the singular include the plural and vice versa, and words in any gender include all genders.","other"
+"The recitals forming the preamble to this Agreement are incorporated by reference and form a part of this Agreement.","other"
+"In the event that regulatory approval for the proposed merger is not obtained within six (6) months of the execution of this Agreement, either party shall have the right to terminate without liability by providing written notice. Upon such termination, each party shall promptly return all due diligence materials exchanged during the process.","termination"
+"The SaaS subscription shall be deemed automatically terminated if the Subscriber's account remains delinquent for more than forty-five (45) days. Upon termination, all data stored on the platform shall be preserved for a sixty (60) day grace period, after which it shall be permanently deleted in accordance with the Vendor's data retention policy.","termination"
+"The clinical trial services agreement shall terminate immediately upon written notice if any regulatory authority issues an enforcement action, clinical hold, or market suspension affecting the subject investigational product. All ongoing trial activities shall be wound down in accordance with applicable regulatory requirements and Good Clinical Practice guidelines.","termination"
+"This construction contract may be terminated by the Owner for default if the Contractor abandons the work, fails to maintain the agreed project schedule by more than thirty (30) days, or fails to remedy identified structural defects within fourteen (14) days of receiving written notice. Upon termination for default, the Owner shall have the right to engage substitute contractors and charge all additional costs to the defaulting Contractor.","termination"
+"The distribution agreement shall terminate without cause upon acquisition of the Distributor by a company that competes directly with the Manufacturer's core product line. The Manufacturer shall give thirty (30) days written notice and shall purchase back all unsold inventory at the original supply price within sixty (60) days of termination.","termination"
+"In cross-border licensing arrangements, this Agreement shall be automatically suspended—and if not cured within ninety (90) days, terminated—upon the imposition of any export control classification, trade embargo, or government-mandated restriction that prevents the Licensor from lawfully supplying the licensed technology to the Licensee's jurisdiction.","termination"
+"Upon termination of this managed services agreement, the Service Provider shall conduct a structured knowledge transfer over a period of no less than thirty (30) business days, delivering all configuration documentation, runbooks, credentials, and source repositories to the Client or its designee. Failure to complete the transition shall constitute a material breach of the termination obligations.","termination"
+"The franchise agreement shall terminate with immediate effect if the Franchisee is found to have engaged in any conduct that, in the Franchisor's reasonable opinion, brings the brand into disrepute, including but not limited to public criminal charges, regulatory violations, or sustained negative media coverage directly linked to the Franchisee's operations.","termination"
+"Either party may terminate this cross-border services agreement without penalty if continued performance would require the party to violate applicable anti-corruption laws, including the US Foreign Corrupt Practices Act or the UK Bribery Act, and no compliant workaround can be identified within thirty (30) business days of the issue arising.","termination"
+"This agreement shall not terminate solely by reason of a party's filing for voluntary Chapter 11 bankruptcy reorganization, provided that the debtor-in-possession continues to perform all material obligations hereunder and obtains Bankruptcy Court approval to assume this Agreement within sixty (60) days of the petition date.","termination"
+"All milestone payments shall be disbursed from a jointly funded escrow account administered by a neutral third-party escrow agent. Funds shall be released within five (5) business days of written confirmation from both parties that the associated milestone acceptance criteria have been satisfied. Disputes over milestone completion shall be referred to an independent technical assessor.","payment_terms"
+"The parties agree that invoicing shall be conducted in the functional currency of the Client's primary operating jurisdiction. Where exchange rate fluctuations between the USD base rate at contract signing and the actual conversion rate at payment date exceed five percent (5%), the parties agree to split the currency risk equally through a written rate adjustment memo.","payment_terms"
+"In the event the Client is a government entity subject to appropriations law, all payment obligations are contingent upon the appropriation of necessary funds by the relevant legislative body. The Contractor acknowledges that delays in appropriation do not constitute a breach by the Client, but the Contractor shall be entitled to suspend performance after ninety (90) days of non-payment pending appropriation.","payment_terms"
+"The revenue share arrangement shall be calculated monthly based on verified gross receipts from the licensed product, less applicable taxes, returns, and chargebacks. The Licensor shall be paid within thirty (30) days of each month-end, accompanied by a detailed royalty statement auditable by the Licensor's designated accountant once per year with thirty (30) days prior notice.","payment_terms"
+"For enterprise SaaS contracts, the annual subscription fee shall be invoiced thirty (30) days prior to the renewal date. If the Client elects to pay bi-annually, a five percent (5%) discount shall apply. If the Client elects to prepay the full multi-year term at signing, a ten percent (10%) discount shall apply and the rate shall be locked for the entire prepaid period.","payment_terms"
+"Construction progress payments shall be based on certified applications for payment submitted by the Contractor and reviewed by the Owner's designated project manager or architect. The Owner shall make payment within twenty-one (21) days of certification, less any retainage of ten percent (10%) until practical completion is achieved and certified.","payment_terms"
+"In the event this Agreement involves cross-border payments subject to withholding tax, the paying party shall gross up the payment amount so that the receiving party nets the full contractual amount after deduction of any withholding. The parties shall cooperate to apply for any applicable treaty exemptions to minimize withholding obligations.","payment_terms"
+"Contractor's fees for professional services shall be billed on a time-and-materials basis using the rates set forth in Schedule B. The Client may not be billed for more than the not-to-exceed budget without a signed change order. Any hours worked beyond the not-to-exceed limit without written approval shall be absorbed by the Contractor.","payment_terms"
+"The parties agree that disputed invoices shall be subject to a formal dispute resolution process before any rights of set-off are invoked. Until the dispute is resolved, the Client shall pay all undisputed portions of the invoice and the Contractor shall continue to provide services. Set-off without prior written dispute notice shall constitute a breach.","payment_terms"
+"Performance-linked payments shall be structured as follows: sixty percent (60%) of the contract value is fixed and payable upon delivery milestones; the remaining forty percent (40%) is contingent on the achievement of measurable KPIs as defined in Annex 1 and verified by an independent third-party auditor within forty-five (45) days of completion.","payment_terms"
+"In the context of AI-assisted decision-making services, the Service Provider shall not be liable for any outcome, decision, or consequence arising from the Client's reliance on AI-generated output without human oversight. The Client expressly acknowledges that AI recommendations are advisory in nature and assumes full liability for all decisions made based on such output.","liability"
+"Notwithstanding the general limitation of liability, the Vendor's liability for a verified personal data breach caused by the Vendor's failure to implement agreed security controls shall be uncapped and shall extend to direct costs of regulatory fines, notification expenses, credit monitoring services, and reasonable legal fees incurred by the Client.","liability"
+"In pharmaceutical supply agreements, the Supplier's liability for defective active pharmaceutical ingredients (APIs) that cause patient harm shall not be subject to the contractual limitation of liability cap, and shall extend to all direct healthcare costs, regulatory investigation costs, and product recall expenses attributable to the defective batch.","liability"
+"The engineering firm's professional liability for design defects in structural drawings shall be limited to the fees earned on the specific project phase in which the defect originated, provided the defect is reported within the applicable professional indemnity insurance limitation period. Latent defects discovered more than six (6) years post-completion shall be time-barred.","liability"
+"For cloud infrastructure services, the Provider's liability for data loss shall be calculated based on the cost of reasonable data reconstruction efforts and shall not include business interruption losses, lost opportunities, or reputational harm. The Client is solely responsible for maintaining independent backups of all critical data.","liability"
+"In a multi-vendor software integration project, liability for system failures caused by the interaction of components from different vendors shall be allocated based on the findings of a jointly commissioned root cause analysis. Each vendor shall be liable only for failures attributable to its own components as determined by the root cause report.","liability"
+"The financial institution shall not be liable for losses arising from the Client's failure to implement multi-factor authentication or other recommended security protocols, where such failure directly contributed to unauthorized access or fraudulent transactions on the Client's account.","liability"
+"In construction contracts under a design-build delivery model, the Design-Build Contractor assumes consolidated liability for both design errors and construction defects, and shall maintain a combined professional indemnity and contractor's all-risk insurance policy covering both design liability and physical loss or damage throughout the project duration.","liability"
+"Neither party shall be liable for any consequential or indirect losses arising from compliance with mandatory sanction screening delays, provided the affected party has implemented and is adhering to an internationally recognized sanctions compliance program and notifies the other party within forty-eight (48) hours of any screening hold.","liability"
+"The cybersecurity firm's liability for failure to detect a zero-day exploit shall be assessed against the standard of care of a reasonable, prudent cybersecurity professional having knowledge available in the industry at the time of the breach, rather than with the benefit of hindsight following the breach.","liability"
+"Access to the virtual data room established for the purposes of M&A due diligence is limited to authorized advisors of each party who have executed individual NDAs governed by this Agreement. All materials downloaded or printed from the data room must be tracked in a document register maintained by the data room administrator.","confidentiality"
+"The confidentiality obligations established herein shall not prevent either party from disclosing information to a whistleblowing authority, regulatory body, or law enforcement agency where such disclosure is required by applicable whistleblower protection laws. Prior notice to the other party shall be given where legally permissible without violating the duty to report.","confidentiality"
+"In healthcare data sharing arrangements governed by HIPAA, Protected Health Information (PHI) disclosed under this Business Associate Agreement shall be subject to confidentiality obligations stricter than those applicable to general business information, and any breach involving PHI shall be reported within seventy-two (72) hours as required by the HIPAA Breach Notification Rule.","confidentiality"
+"The parties agree that information shared in the context of pre-contract negotiations, including term sheets, letters of intent, board presentations, and valuation models, shall be treated as Confidential Information of the highest sensitivity and shall not be used for any investment, competitive, or commercial purpose without explicit written consent.","confidentiality"
+"For fintech and banking partnerships, all customer transaction data, behavioral analytics, and account-level information exchanged under this Agreement shall be subject to data minimization principles. The receiving party may only process such data to the minimum extent necessary to perform agreed services and shall not aggregate or repurpose the data.","confidentiality"
+"The receiving party shall implement a formal clean team protocol for any Confidential Information that constitutes competitively sensitive pricing or strategic plans. Members of the clean team shall be restricted from involvement in commercial decisions that could benefit from the disclosed information for a period of twelve (12) months.","confidentiality"
+"Where Confidential Information is disclosed in the context of a joint research and development project, the parties agree that such information shall be subject to a dual-classification system: Level 1 for general project information accessible to all team members, and Level 2 for proprietary algorithms and trade secrets accessible only to designated senior researchers.","confidentiality"
+"The disclosure of Confidential Information through inadvertent inclusion in publicly filed court documents shall not constitute a breach of this Agreement, provided the disclosing party took reasonable steps to file under seal and promptly moved to rectify the inadvertent disclosure upon discovery.","confidentiality"
+"In cross-border transactions, the parties shall be responsible for ensuring that the transfer of Confidential Information across national borders complies with applicable data localization laws, and shall implement standard contractual clauses, binding corporate rules, or other legally recognized transfer mechanisms as required by applicable law.","confidentiality"
+"The receiving party's confidentiality obligations shall extend to all agents, consultants, and subcontractors engaged to perform services under this Agreement, and the receiving party shall ensure that each such third party executes an individual confidentiality agreement containing protections no less stringent than those herein before receiving access to any Confidential Information.","confidentiality"
+"This Agreement shall be governed by the laws of the State of New York applicable to contracts made and fully performed therein, expressly excluding the provisions of the UN Convention on Contracts for the International Sale of Goods (CISG) and any other international treaty that would alter the parties' rights and obligations.","governing_law"
+"The parties agree to a split governing law structure: matters relating to intellectual property ownership and licensing shall be governed by the laws of England and Wales, while matters relating to employment and non-compete restrictions shall be governed by the laws of the jurisdiction in which the relevant employee is domiciled.","governing_law"
+"For cross-border SaaS contracts involving EU data subjects, this Agreement shall also be subject to the requirements of the EU General Data Protection Regulation (GDPR), which shall prevail over the chosen governing law in the event of any conflict concerning the processing of personal data of EU residents.","governing_law"
+"The parties agree that notwithstanding the governing law clause, mandatory consumer protection provisions of the consumer's country of residence shall apply to any terms that seek to limit statutory rights. Nothing in this Agreement shall be construed to waive rights that cannot be excluded under applicable consumer law.","governing_law"
+"This international licensing agreement is governed by the laws of Switzerland as a neutral jurisdiction acceptable to both parties, provided that the United Nations Commission on International Trade Law (UNCITRAL) Model Law shall supplement Swiss law on matters of international commercial arbitration where Swiss law is silent.","governing_law"
+"Where this Agreement is executed by subsidiaries incorporated in different jurisdictions, each subsidiary's obligations under this Agreement shall be interpreted in accordance with the laws of its jurisdiction of incorporation for matters of corporate authority, and the primary governing law for substantive obligations shall be that of the parent company's jurisdiction.","governing_law"
+"The parties expressly agree that any renvoi (referral back) or choice of foreign law by the governing law shall be disregarded. The substantive law of the specified jurisdiction shall apply directly to all matters under this Agreement without reference to its conflict-of-laws rules.","governing_law"
+"For agreements involving parties in sanctioned jurisdictions, the parties agree that US federal law, including applicable OFAC regulations and EAR export control laws, shall apply as an overlay to the chosen governing law and shall take precedence in the event of any conflict.","governing_law"
+"This Agreement is governed by the laws of the Hong Kong Special Administrative Region. The parties acknowledge that, as of the date of this Agreement, Hong Kong law provides a distinct legal system from that of the People's Republic of China and is the intended basis for all legal interpretations herein.","governing_law"
+"All disputes relating to the validity, interpretation, and enforceability of this Agreement's arbitration clause shall themselves be governed exclusively by the procedural law of the seat of arbitration, notwithstanding any conflicting provisions in the main governing law clause.","governing_law"
+"The Vendor's IP indemnification obligation shall not apply to claims arising from: (i) modification of the software by the Client beyond the scope permitted under this Agreement; (ii) use of the software in combination with non-approved third-party products; (iii) continued use of a version of the software after the Vendor has provided a non-infringing alternative.","indemnification"
+"Where open-source software components are incorporated into the deliverables under a copyleft license, and such components are later subject to an infringement claim, the Contractor's indemnification obligation shall be limited to the direct costs of replacing the infringing component with a license-compliant equivalent within sixty (60) days of notice.","indemnification"
+"The parties agree to a mutual IP indemnification structure: each party shall indemnify the other for infringement claims arising from its own background IP; joint IP shall be owned equally and infringement claims relating to joint IP shall be defended jointly with costs shared equally.","indemnification"
+"In clinical research agreements, the Sponsor shall indemnify and hold harmless the Institution and its investigators against third-party claims arising from: (a) the design of the clinical protocol; (b) defects in the investigational product supplied by the Sponsor; and (c) instructions given by the Sponsor that deviate from the approved protocol.","indemnification"
+"The franchise indemnification clause shall create a direct covenant of the Franchisor to defend Franchisee against class action consumer claims arising from centralized marketing or product quality issues originating from the Franchisor's supply chain, even where the Franchisee was not individually at fault.","indemnification"
+"The escrow agent shall be indemnified by the depositing party against all costs, losses, and liabilities arising from the agent's compliance with joint written release instructions, provided the agent acted in good faith and in accordance with the escrow agreement, and shall be indemnified by the non-complying party if its refusal to provide instructions causes loss.","indemnification"
+"In infrastructure outsourcing agreements, the Service Provider shall indemnify the Client for all regulatory penalties and fines resulting from service level failures that constitute a breach of the Client's obligations to its own regulators, provided that such failures are directly attributable to the Service Provider's operational errors.","indemnification"
+"The investment bank serving as financial advisor shall be indemnified by the Client for all third-party claims including shareholder suits arising from the Client's decision to proceed with the transaction, except to the extent such claims are attributable to the banks' own material misstatements in the fairness opinion.","indemnification"
+"In reseller and channel partner agreements, the reseller shall indemnify the original vendor against claims arising from representations or warranties made by the reseller to end customers that exceed or contradict those made by the vendor in its standard product documentation.","indemnification"
+"The indemnification provisions of this Agreement shall be subject to an insurance-first requirement: the indemnifying party shall first exhaust all available insurance coverage before its direct indemnification obligations are triggered, and the timing of indemnification payments shall be coordinated with the insurer's claims process.","indemnification"
+"Works generated through the use of artificial intelligence tools during the performance of services under this Agreement shall be treated as follows: where a human author made substantial creative contributions, the work shall be owned by the Client as a work-for-hire; where output is entirely AI-generated without human authorship, ownership shall be determined by applicable law as of the date of creation.","intellectual_property"
+"The parties agree that any patent applications filed on inventions jointly developed under this Agreement shall name inventors from both parties and shall be prosecuted by jointly appointed patent counsel. Costs of prosecution shall be shared equally, and neither party may abandon a jointly filed application without offering the other party the right to take over prosecution at its own expense.","intellectual_property"
+"In the context of a platform-as-a-service agreement, all training data, model weights, and improvement logs generated through the Client's use of the platform shall remain proprietary to the Vendor. The Client shall retain ownership of its raw input data but grants the Vendor a perpetual, irrevocable license to use anonymized versions of such data to improve the Vendor's models.","intellectual_property"
+"Any software developed using the Contractor's proprietary development framework shall incorporate an attribution notice in its documentation, and the Client acknowledges that the Contractor retains a retained license to the core framework components. Only the application layer developed specifically for the Client shall transfer to Client ownership.","intellectual_property"
+"The parties acknowledge the complexities of open-source licensing compliance and agree to engage a third-party open-source license auditor at the start of the project and before any major release. The Contractor shall remediate any license conflicts identified within the audit before delivery, and the cost of audit and remediation shall be shared equally.","intellectual_property"
+"In a standard-essential patent (SEP) licensing context, the Licensor agrees to offer licenses to all implementers of the relevant technical standard on fair, reasonable, and non-discriminatory (FRAND) terms. The royalty rate agreed herein shall constitute the FRAND rate for this licensee and shall be treated as confidential.","intellectual_property"
+"Where the Vendor incorporates datasets from third-party data providers into its platform, the Vendor warrants that it holds valid data licenses permitting the Client's downstream use. The Vendor shall maintain copies of all third-party data licenses and shall notify the Client within five (5) business days if any such license expires or is revoked.","intellectual_property"
+"The contractor's background IP used in the project delivery shall remain the contractor's property; however, the contractor grants the client a perpetual, irrevocable, royalty-free license to use such background IP as embedded in the deliverables for the client's internal business purposes only, without the right to sublicense or commercialize.","intellectual_property"
+"The Licensee shall include the following attribution in all products incorporating the licensed technology: 'Powered by [Licensor Name] Technology, licensed under [License Identifier].' Failure to include this attribution shall constitute a material breach of the license and shall entitle the Licensor to terminate the license with immediate effect.","intellectual_property"
+"In the event that any deliverable is found to incorporate an orphan work—a copyrighted work whose author cannot be identified or located—the Contractor shall replace such work with a licensed alternative within thirty (30) days of discovery and shall compensate the Client for any costs arising from use of the orphan work.","intellectual_property"
+"The parties agree to a tiered dispute escalation mechanism: (Tier 1) operational-level discussion within ten (10) business days; (Tier 2) executive-level negotiation within a further fifteen (15) business days; (Tier 3) non-binding expert determination for technical disputes; and (Tier 4) binding ICC arbitration for all remaining unresolved disputes.","dispute_resolution"
+"Technical disputes relating to the conformity of software deliverables with agreed specifications shall be referred to an independent software testing expert jointly appointed by the parties. The expert shall issue a written determination within thirty (30) business days, which shall be binding unless either party demonstrates manifest error within fourteen (14) days of receipt.","dispute_resolution"
+"Disputes arising under smart contract arrangements recorded on a distributed ledger shall be governed by the on-chain dispute resolution protocol specified in the smart contract code, provided such protocol produces an outcome consistent with the intent of this Agreement. Where the on-chain outcome conflicts with this Agreement, this Agreement shall prevail.","dispute_resolution"
+"The parties agree that in multi-party construction disputes involving the Owner, General Contractor, and Subcontractor, the dispute resolution mechanism shall operate simultaneously across all related parties to ensure consistent outcomes and to prevent inconsistent arbitral awards arising from parallel proceedings.","dispute_resolution"
+"In the event of a regulatory investigation triggered by this Agreement, the parties agree that all internal communications exchanged for the purpose of jointly responding to the investigation shall be subject to a common interest privilege, and neither party shall waive that privilege without the other's written consent.","dispute_resolution"
+"Any claim for loss of profits, loss of business opportunity, or loss of anticipated revenue arising from a breach of this Agreement shall be subject to a mandatory preliminary hearing before a sole arbitrator to assess whether the claim passes a prima facie threshold before full arbitration proceedings are commenced.","dispute_resolution"
+"The parties agree that any arbitration brought under this Agreement shall be conducted on a documents-only basis for claims below USD 250,000, with no oral hearings permitted. For claims exceeding this threshold, a full hearing may be convened at the seat of arbitration with forty-five (45) days notice.","dispute_resolution"
+"In international franchise disputes, the parties agree that the arbitration shall be conducted under the WIPO Arbitration Rules, with the arbitrator having authority to order cross-border injunctive relief, appointment of a receiver, or compulsory license of the franchise IP during the pendency of the dispute.","dispute_resolution"
+"The parties expressly agree that the arbitrator shall have power to issue awards in equity as well as in law, including orders of specific performance, rescission, or declaratory relief, and shall not be limited to monetary compensation in fashioning a remedy.","dispute_resolution"
+"For disputes arising from fintech partnerships involving payment processing or digital asset management, the parties agree that disputes shall be fast-tracked under an expedited arbitration procedure with a target timeline of ninety (90) days from the filing of a notice of arbitration to the issuance of a final award.","dispute_resolution"
+"Extreme weather events attributable to climate change, including but not limited to abnormally severe flooding, wildfires, and extended heat emergencies that render performance physically impossible, shall constitute Force Majeure Events under this Agreement. The parties acknowledge that climate-related events are increasing in frequency and agree to review this definition annually.","force_majeure"
+"Geopolitical disruptions, including sudden imposition of international sanctions, armed conflict at or near a party's principal place of business, or government-ordered closure of key transport corridors, shall constitute Force Majeure Events. The affected party shall provide prompt notice with supporting publicly available evidence and shall explore alternative supply chain routing with documented diligence.","force_majeure"
+"In semiconductor supply agreements, global chip shortages driven by factory closures, raw material embargoes, or geopolitical export restrictions shall be treated as Force Majeure Events. The Supplier shall allocate available inventory fairly among customers and shall document its allocation methodology as part of its force majeure notification.","force_majeure"
+"A prolonged power grid failure or electricity rationing program imposed by government authorities that prevents operation of the Contractor's production facilities for more than seventy-two (72) consecutive hours shall constitute a Force Majeure Event, entitling the Contractor to an extension of time equal to the duration of the outage plus a reasonable recommissioning period.","force_majeure"
+"Ransomware attacks or coordinated DDoS attacks that render a party's IT systems inoperable for more than forty-eight (48) continuous hours shall constitute Force Majeure Events, provided that: (a) the affected party had implemented industry-standard cybersecurity measures; and (b) the attack was not facilitated by the affected party's negligence.","force_majeure"
+"In pharmaceutical manufacturing agreements, a recall or withdrawal of a key raw material by a regulatory authority on safety grounds, where no alternative-qualified supplier exists with available capacity, shall constitute a Force Majeure Event. The Manufacturer shall document all efforts to qualify alternative suppliers as part of its force majeure obligations.","force_majeure"
+"Maritime shipping agreements shall treat port closures, canal blockades, piracy events, or extreme weather affecting shipping lanes as Force Majeure Events. In such cases, the Carrier shall use reasonable alternative routing and shall notify the Shipper immediately, providing an estimated delay and revised delivery schedule.","force_majeure"
+"This Agreement expressly provides that the economic consequences of a Force Majeure Event, including increased costs, inflation, or currency devaluation, shall not of themselves constitute Force Majeure Events. Only direct physical inability to perform shall qualify, unless the parties agree in writing to a hardship adjustment clause.","force_majeure"
+"In energy sector contracts, a government-mandated curtailment of energy production capacity, renewable certificate withdrawal, or change in grid access rights that materially reduces the producing party's ability to deliver contracted volumes shall be treated as a qualifying Force Majeure Event, subject to regulatory documentation being provided.","force_majeure"
+"If a Force Majeure Event causes only partial impairment of performance, the affected party shall continue to perform to the extent reasonably possible and shall proportionally allocate available capacity among its contractual commitments using a documented, non-discriminatory methodology.","force_majeure"
+"In the context of a private equity-backed management buyout, the departing founders agree to a non-compete covering the specific product category, customer segment, and geographic market of the portfolio company for a period of thirty-six (36) months post-closing. In consideration, the founders shall receive a non-compete consideration payment of two percent (2%) of the transaction enterprise value.","non_compete"
+"The healthcare practitioner consents, as a condition of joining the medical group, to a non-compete applicable within a twenty-mile radius of any clinic operated by the group for a period of twenty-four (24) months post-departure. The practitioner acknowledges that enforcement in this jurisdiction requires the payment of a non-compete allowance per applicable state law.","non_compete"
+"The digital platform's non-compete clause prohibits the departing senior engineer not only from joining competitors, but also from accepting advisory roles, board seats, or equity participation in any startup that directly replicates core features of the platform's proprietary recommendation algorithm within eighteen (18) months of termination.","non_compete"
+"In franchise agreements, the franchisee agrees that during the term and for a period of twenty-four (24) months after termination, it shall not operate, invest in, or provide consulting services to any business that competes within a five-kilometer radius of any existing franchise location of the same brand, whether operated by the franchisee or any other franchisee.","non_compete"
+"The non-solicitation provision shall prohibit the departing employee from accepting unsolicited business from former clients if the client's decision to switch is proven to have been influenced by information, relationships, or leveraged pricing intelligence developed during the employee's tenure with the company.","non_compete"
+"The cross-border employment contract includes a cascading non-compete: twenty-four (24) months globally for C-suite executives; eighteen (18) months within the EMEA region for vice presidents; and twelve (12) months within the country of employment for all other senior employees. Each tier may be enforced independently.","non_compete"
+"The parties agree that breach of the non-compete clause shall be subject to liquidated damages calculated as one and a half times the employee's last annual total compensation package, reflecting the parties' genuine pre-estimate of the harm caused by competitive activity rather than an unenforceable penalty.","non_compete"
+"In cloud service reseller agreements, the reseller agrees not to white-label, rebrand, or seek equivalent services from any direct competitor of the cloud provider's platform for a period of twelve (12) months following termination, and shall provide the cloud provider with sixty (60) days advance notice before initiating any competitive procurement process.","non_compete"
+"The non-compete obligations attached to an M&A transaction shall be enforceable against each of the selling shareholders who receives sale proceeds above a threshold of five hundred thousand dollars ($500,000), as each such shareholder is deemed to have received independent, adequate consideration for the restriction.","non_compete"
+"The investment advisor non-compete shall prohibit the individual from managing or advising any fund with an investment strategy materially overlapping with that of the fund managed by the firm for a period of twenty-four (24) months. Overlap shall be defined as greater than thirty percent (30%) similarity in portfolio construction as measured by asset class, geography, and sector allocation.","non_compete"
+"The SaaS provider warrants a monthly system uptime of ninety-nine point nine percent (99.9%), calculated excluding pre-notified maintenance windows of no more than four (4) hours per month. Service credit remedies for downtime shall be calculated on a sliding scale and shall constitute the Client's sole and exclusive remedy for uptime failures.","warranties"
+"The financial data provider warrants that all market data feeds shall be transmitted with a latency of no greater than five (5) milliseconds under normal operating conditions. Any systematic latency exceeding this threshold for more than thirty (30) consecutive seconds shall be treated as a service warranty breach and shall trigger automated service credit calculations.","warranties"
+"In pharmaceutical contract manufacturing, the CMO warrants that all batches shall be manufactured in strict compliance with current Good Manufacturing Practice (cGMP) regulations, applicable pharmacopoeial standards, and the Product Quality Agreement (PQA) executed simultaneously with this Agreement. Any deviation from the PQA shall be reported within twenty-four (24) hours.","warranties"
+"The construction contractor warrants that all structural elements shall be designed and built to withstand the loads and environmental conditions specified in the structural engineer's report for a minimum of fifty (50) years, subject to normal maintenance. This structural warranty shall survive project completion and shall be transferable to subsequent owners of the building.","warranties"
+"The cybersecurity vendor warrants that its managed detection and response (MDR) service shall identify and contain critical security incidents within a mean time to contain (MTTC) of four (4) hours from initial alert. Failure to meet this MTTC on more than two occasions in any calendar quarter shall constitute a material breach of warranty.","warranties"
+"In AI model licensing agreements, the Licensor warrants that the licensed model's performance metrics, including precision, recall, and F1 score on the agreed benchmark dataset, shall not degrade by more than five percent (5%) relative to the performance disclosed at contract signing for a period of twelve (12) months post-deployment.","warranties"
+"The medical device manufacturer warrants that its diagnostic device shall maintain accuracy within the clinically acceptable tolerance range as defined by the applicable CE mark or FDA 510(k) clearance for the device's entire intended service life, provided the device is operated and maintained in accordance with the instructions for use.","warranties"
+"In energy performance contracting, the energy services company (ESCO) warrants a minimum guaranteed energy cost saving of twenty percent (20%) annually relative to the pre-project baseline. If savings fall below this threshold, the ESCO shall make up the shortfall through a performance guarantee payment, calculated as the difference between actual and guaranteed savings.","warranties"
+"The software integrator warrants that the integrated system shall, upon go-live, process a minimum of ten thousand (10,000) concurrent transactions per second without performance degradation exceeding five percent (5%) of agreed response time benchmarks. Performance warranty claims must be supported by independently verified load testing reports.","warranties"
+"The hardware vendor warrants that all components supplied under this Agreement conform to RoHS (Restriction of Hazardous Substances) and WEEE (Waste Electrical and Electronic Equipment) Directive requirements, and undertakes to provide documentation of conformity upon request within five (5) business days.","warranties"
+"The parties agree to incorporate Environmental, Social, and Governance (ESG) performance obligations into this supply chain agreement. The Supplier shall annually submit a third-party verified ESG disclosure report and shall maintain a minimum ESG rating of 'B' as assessed by an internationally recognized ESG rating agency. Failure to maintain this rating may be treated as a contract review trigger.","other"
+"Each party represents and warrants that it has not made, offered, or authorized, and shall not make, offer, or authorize, any payment, gift, or other inducement to any government official, employee, or business partner for the purpose of obtaining or retaining business in connection with this Agreement, in compliance with the UK Bribery Act 2010, the US FCPA, and all applicable anti-corruption laws.","other"
+"The parties agree to maintain a joint data governance committee comprising two representatives from each party. The committee shall convene quarterly to review data sharing practices, assess compliance with applicable data laws, and approve any proposed changes to data processing activities conducted under the framework of this Agreement.","other"
+"This Agreement is self-contained and entire. All prior term sheets, memoranda of understanding, heads of agreement, and letters of intent relating to the subject matter of this Agreement are superseded and have no contractual force. No party may rely upon pre-contractual representations not expressly incorporated herein.","other"
+"In multi-party consortium agreements, the parties agree to appoint a Consortium Manager who shall be responsible for coordinating the activities of all parties, maintaining a master task register, and convening monthly progress meetings. Decisions of the Consortium requiring unanimous consent shall be made in writing and shall be binding on all members.","other"
+"The parties agree to conduct an annual contractual compliance audit to verify adherence to the key obligations of this Agreement. The audit shall be performed by a mutually agreed-upon independent auditor, with costs shared equally. Audit findings shall be treated as Confidential Information and shall generate a mandatory remediation plan within sixty (60) days.","other"
+"For technology supply agreements with critical national infrastructure operators, this Agreement shall include enhanced step-in rights for the relevant government authority, allowing the authority to assume operational control of the services for up to ninety (90) days in the event of a national security incident or critical service disruption.","other"
+"The parties acknowledge that this Agreement may be subject to mandatory notification to or approval by relevant competition authorities before becoming fully effective. Each party shall file the required notifications promptly and shall cooperate fully with any regulatory review process. The Agreement shall not become effective until all required clearances have been obtained.","other"
+"In agreements involving indigenous land rights or community benefit sharing, the parties agree that this document shall be accompanied by a Free, Prior and Informed Consent (FPIC) protocol document governing the manner in which affected communities are consulted, and any decision by an affected community to withdraw consent shall trigger a mandatory renegotiation of this Agreement.","other"
+"The parties agree to include a contractual technology modernization clause, requiring the parties to renegotiate pricing, service levels, and technical specifications every three (3) years to reflect material advances in the relevant technology. Either party may trigger a modernization review by providing ninety (90) days written notice.","other"
