@@ -3,10 +3,13 @@ backend/api/routes_analysis.py
 ================================
 FastAPI router for contract analysis and summarisation endpoints.
 
+Both routes now dispatch **async Celery tasks** and return immediately with a
+``task_id``.  Clients poll ``GET /tasks/{task_id}`` for the result.
+
 Routes
 ------
-POST /contracts/{contract_id}/analyze  — Run full AI analysis.
-POST /contracts/{contract_id}/summary  — Generate contract summary.
+POST /contracts/{contract_id}/analyze  — Enqueue analysis task.
+POST /contracts/{contract_id}/summary  — Enqueue summarisation task.
 """
 
 from __future__ import annotations
@@ -14,9 +17,9 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from backend.dependencies import get_contract_or_404
-from backend.schemas.analysis_schema import AnalysisResponse, SummaryResponse
-from backend.services import analysis_service
+from backend.schemas.task_schema import TaskEnqueuedResponse
 from backend.utils.logger import get_logger
+from backend.worker.tasks import task_analyze_contract, task_summarize_contract
 
 logger = get_logger(__name__)
 
@@ -29,46 +32,50 @@ router = APIRouter(prefix="/contracts", tags=["Analysis"])
 
 @router.post(
     "/{contract_id}/analyze",
-    response_model=AnalysisResponse,
-    summary="Analyse a contract",
+    response_model=TaskEnqueuedResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+    summary="Analyse a contract (async)",
     description=(
-        "Run the full AI pipeline on an uploaded contract: "
-        "text extraction → clause detection → risk analysis. "
-        "Returns a risk score, detected clause map, and a list of risk findings."
+        "Enqueue an AI analysis job for the uploaded contract. "
+        "Returns a ``task_id`` immediately — poll ``GET /tasks/{task_id}`` "
+        "every 2–3 seconds until ``status`` is ``'done'``.\n\n"
+        "**Pipeline (runs in background worker):**\n"
+        "Text extraction → Clause detection → Risk analysis"
     ),
 )
 async def analyze_contract(
     contract_id: str,
-    _contract: dict = Depends(get_contract_or_404),   # ensures 404 guard runs
-) -> AnalysisResponse:
+    _contract: dict = Depends(get_contract_or_404),
+) -> TaskEnqueuedResponse:
     """
-    Analyse an uploaded contract.
-
-    **Pipeline:**
-    1. Extract text from the stored file.
-    2. Detect clause types using the clause classifier.
-    3. Run risk detection rules.
-    4. Return structured JSON.
+    Dispatch an async analysis task and return the task ID for polling.
 
     The ``contract_id`` must be a UUID returned by ``POST /contracts/upload``.
     """
-    logger.info("Analysis request: contract_id=%s", contract_id)
+    logger.info("Enqueuing analyze task: contract_id=%s", contract_id)
 
     try:
-        return analysis_service.run_analysis(contract_id)
+        task = task_analyze_contract.delay(contract_id)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Failed to enqueue analyze task for contract_id=%s", contract_id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=(
+                f"Failed to enqueue analysis task: {exc}. "
+                "Is the Celery worker running? "
+                "Start it with: celery -A backend.worker.celery_app worker --loglevel=info"
+            ),
+        )
 
-    except FileNotFoundError as exc:
-        logger.error("Analysis — file not found: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(exc),
-        )
-    except Exception as exc:     # noqa: BLE001
-        logger.exception("Analysis pipeline error for contract_id=%s", contract_id)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Analysis failed: {exc}",
-        )
+    logger.info("Enqueued analyze task_id=%s  contract_id=%s", task.id, contract_id)
+
+    return TaskEnqueuedResponse(
+        task_id     = task.id,
+        status      = "pending",
+        contract_id = contract_id,
+        task_type   = "analyze",
+        poll_url    = f"/tasks/{task.id}",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -77,40 +84,42 @@ async def analyze_contract(
 
 @router.post(
     "/{contract_id}/summary",
-    response_model=SummaryResponse,
-    summary="Summarise a contract",
+    response_model=TaskEnqueuedResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+    summary="Summarise a contract (async)",
     description=(
-        "Generate a concise, bullet-point summary of the contract using the "
-        "BART-based legal summarisation pipeline. "
-        "Returns a list of key points and an optional full prose summary."
+        "Enqueue a summarisation job. "
+        "Returns a ``task_id`` immediately — poll ``GET /tasks/{task_id}`` "
+        "for the bullet-point result.\n\n"
+        "**Pipeline (runs in background worker):**\n"
+        "Text extraction → BART-based chunked summarisation"
     ),
 )
 async def summarise_contract(
     contract_id: str,
     _contract: dict = Depends(get_contract_or_404),
-) -> SummaryResponse:
-    """
-    Summarise an uploaded contract.
-
-    **Pipeline:**
-    1. Extract text from the stored file.
-    2. Chunk and summarise using the LegalSummarizer model.
-    3. Return structured bullet points.
-    """
-    logger.info("Summary request: contract_id=%s", contract_id)
+) -> TaskEnqueuedResponse:
+    """Dispatch an async summarisation task and return the task ID for polling."""
+    logger.info("Enqueuing summarize task: contract_id=%s", contract_id)
 
     try:
-        return analysis_service.run_summary(contract_id)
+        task = task_summarize_contract.delay(contract_id)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Failed to enqueue summarize task for contract_id=%s", contract_id)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=(
+                f"Failed to enqueue summarisation task: {exc}. "
+                "Is the Celery worker running?"
+            ),
+        )
 
-    except FileNotFoundError as exc:
-        logger.error("Summary — file not found: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(exc),
-        )
-    except Exception as exc:     # noqa: BLE001
-        logger.exception("Summary pipeline error for contract_id=%s", contract_id)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Summarisation failed: {exc}",
-        )
+    logger.info("Enqueued summarize task_id=%s  contract_id=%s", task.id, contract_id)
+
+    return TaskEnqueuedResponse(
+        task_id     = task.id,
+        status      = "pending",
+        contract_id = contract_id,
+        task_type   = "summarize",
+        poll_url    = f"/tasks/{task.id}",
+    )

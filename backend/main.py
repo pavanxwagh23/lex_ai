@@ -36,6 +36,7 @@ from fastapi.responses import JSONResponse
 
 from backend.api.routes_analysis import router as analysis_router
 from backend.api.routes_compare import router as compare_router
+from backend.api.routes_tasks import router as tasks_router
 from backend.api.routes_upload import router as upload_router
 from backend.config import (
     API_DESCRIPTION,
@@ -129,6 +130,7 @@ app.add_middleware(
 app.include_router(compare_router)
 app.include_router(upload_router)
 app.include_router(analysis_router)
+app.include_router(tasks_router)
 
 
 # ---------------------------------------------------------------------------
