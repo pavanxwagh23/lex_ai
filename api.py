@@ -9,11 +9,15 @@ from typing import List, Dict, Any, Optional
 import sys
 from pathlib import Path
 
+# Setup logging early so logger is available before optional imports
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Add the ai_engine directory to the Python path
 sys.path.append(str(Path(__file__).parent / "ai_engine"))
 
 from clause_detector_pro import analyze_contract
-from pdf_extractor import process_pdf, process_pdf_with_ocr
+from pdf_extractor import process_document, extract_text_with_ocr
 
 # Transformer-based clause classifier (fine-tuned Legal-BERT)
 try:
@@ -34,9 +38,27 @@ try:
 except Exception as _cmp_import_err:  # noqa: BLE001
     _COMPARATOR_AVAILABLE = False
 
+# Rule-based risk detection engine
+try:
+    from risk_detection import RiskDetectionEngine as _RiskEngine
+    _risk_engine = _RiskEngine()
+    _RISK_AVAILABLE = True
+except Exception as _risk_import_err:  # noqa: BLE001
+    logger.warning("Risk detection engine could not be loaded: %s", _risk_import_err)
+    _RISK_AVAILABLE = False
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Legal document summarizer (requires transformers + torch)
+try:
+    from summarizer import LegalSummarizer as _LegalSummarizer
+    _SUMMARIZER_AVAILABLE = True
+except Exception as _sum_import_err:  # noqa: BLE001
+    logger.warning(
+        "Summarizer could not be loaded: %s. "
+        "Install with: pip install transformers torch",
+        _sum_import_err,
+    )
+    _SUMMARIZER_AVAILABLE = False
+
 
 app = FastAPI(title="Legal AI Analyzer API")
 
@@ -63,6 +85,17 @@ class ClassifyRequest(BaseModel):
 class ClassifyBatchRequest(BaseModel):
     """Request model for batch transformer classification."""
     paragraphs: List[str]
+
+
+class RiskAnalysisRequest(BaseModel):
+    """Request model for the /analyze_risks endpoint."""
+    paragraphs: List[str]
+
+
+class SummarizeRequest(BaseModel):
+    """Request model for the /summarize endpoint."""
+    text: Optional[str] = None
+    paragraphs: Optional[List[str]] = None
 
 @app.get("/")
 async def root():
@@ -115,22 +148,23 @@ async def analyze_pdf_endpoint(
     try:
         # Step 1: Extract Text
         if use_ocr:
-            extracted_data = process_pdf_with_ocr(temp_pdf_path)
-            # Extracted data structure: {pages: [{page_num, text}], full_text}
-            full_text = extracted_data["full_text"]
+            # OCR path: use extract_text_with_ocr for scanned PDFs
+            full_text = extract_text_with_ocr(temp_pdf_path)
+            num_pages = 0  # page count not available separately for OCR path
         else:
-            extracted_data = process_pdf(temp_pdf_path)
-            full_text = extracted_data["full_text"]
+            extracted_data = process_document(temp_pdf_path)
+            # process_document returns: {raw_text, clean_text, paragraphs, num_pages, source_type}
+            full_text = extracted_data["clean_text"]
+            num_pages = extracted_data.get("num_pages", 0)
             
         if not full_text.strip():
             raise HTTPException(status_code=400, detail="Could not extract text from the PDF. Try enabling OCR.")
             
-        # Segment into paragraphs (basic split for now, robust extraction could be better)
-         # Try split by double newline first, then single
+        # Segment into paragraphs
         paragraphs = [p.strip() for p in full_text.split("\n\n") if p.strip()]
-        if len(paragraphs) < 5: 
-             # If too few paragraphs, maybe it's just single newlines
-             paragraphs = [p.strip() for p in full_text.split("\n") if p.strip()]
+        if len(paragraphs) < 5:
+            # If too few paragraphs, try single newlines
+            paragraphs = [p.strip() for p in full_text.split("\n") if p.strip()]
              
         # Step 2: Analyze Clauses
         analysis_results = analyze_contract(
@@ -142,7 +176,7 @@ async def analyze_pdf_endpoint(
         return {
             "filename": file.filename,
             "extraction_info": {
-                "total_pages": len(extracted_data.get("pages", [])),
+                "total_pages": num_pages,
                 "used_ocr": use_ocr
             },
             "analysis": analysis_results
@@ -327,6 +361,129 @@ async def compare_contracts_endpoint(request: CompareContractsRequest):
     except Exception as exc:
         logger.error("Contract comparison error: %s", exc)
         raise HTTPException(status_code=500, detail=f"Comparison failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Risk Analysis endpoint
+# ---------------------------------------------------------------------------
+
+@app.post("/analyze_risks")
+async def analyze_risks_endpoint(request: RiskAnalysisRequest):
+    """
+    Scan contract paragraphs for legal risks using the rule-based engine.
+
+    Detects 8 risk categories (Unlimited Liability, One-Sided Indemnity,
+    IP Ownership Risk, Payment Risk, Jurisdiction Risk, etc.) and returns
+    a normalised overall risk score (0–10) plus per-finding details.
+
+    Request body
+    ------------
+    - ``paragraphs`` : list[str] — raw contract paragraphs
+
+    Response
+    --------
+    ::
+
+        {
+          "risk_score": 6.67,              # 0–10
+          "total_paragraphs": 5,
+          "risky_paragraph_count": 3,
+          "risks_detected": [
+            {
+              "type": "One-sided Indemnity",
+              "severity": "HIGH",
+              "text": "The vendor shall indemnify...",
+              "explanation": "...",
+              "matched_phrase": "shall indemnify",
+              "paragraph_index": 2
+            }
+          ]
+        }
+    """
+    if not _RISK_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Risk detection engine is not available.",
+        )
+
+    paragraphs = [p.strip() for p in request.paragraphs if p and p.strip()]
+    if not paragraphs:
+        raise HTTPException(status_code=400, detail="'paragraphs' list cannot be empty.")
+
+    try:
+        result = _risk_engine.analyze(paragraphs)
+        return result.to_dict()
+    except Exception as exc:
+        logger.error("Risk analysis error: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Risk analysis failed: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Summarization endpoint
+# ---------------------------------------------------------------------------
+
+@app.post("/summarize")
+async def summarize_endpoint(request: SummarizeRequest):
+    """
+    Generate a structured legal summary of a contract using BART-large-CNN.
+
+    Splits long contracts into overlapping chunks, summarises each chunk,
+    then consolidates into a final report with labelled sections.
+
+    Request body
+    ------------
+    - ``text``       : str (optional) — raw contract text
+    - ``paragraphs`` : list[str] (optional) — pre-split paragraphs
+    Provide at least one of the two.
+
+    Response
+    --------
+    ::
+
+        {
+          "overall_summary": "This agreement establishes...",
+          "key_points": ["...", "..."],
+          "obligations": ["..."],
+          "payment_terms": ["..."],
+          "termination": ["..."],
+          "risks": ["..."]
+        }
+
+    Note
+    ----
+    First call downloads the ``facebook/bart-large-cnn`` model (~1.6 GB).
+    Subsequent calls use the local HuggingFace cache.
+    """
+    if not _SUMMARIZER_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Summarizer is not available. "
+                "Install dependencies: pip install transformers torch"
+            ),
+        )
+
+    if not request.text and not request.paragraphs:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide either 'text' or 'paragraphs' in the request body.",
+        )
+
+    try:
+        summarizer = _LegalSummarizer()
+        if request.paragraphs:
+            result = summarizer.generate_summary("", paragraphs=request.paragraphs)
+        else:
+            result = summarizer.generate_summary(request.text)
+        return result.to_dict()
+    except ImportError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Summarizer dependencies missing: {exc}. Install: pip install transformers torch",
+        )
+    except Exception as exc:
+        logger.error("Summarization error: %s", exc)
+        raise HTTPException(status_code=500, detail=f"Summarization failed: {exc}")
 
 
 if __name__ == "__main__":

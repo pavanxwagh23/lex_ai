@@ -12,9 +12,21 @@ from typing import Dict, List, Union
 from io import BytesIO
 
 import pdfplumber
-from PIL import Image
-import pytesseract
-from pdf2image import convert_from_path
+
+# PyMuPDF for robust PDF text extraction and page rendering (no Poppler needed)
+try:
+    import fitz  # PyMuPDF
+    _FITZ_AVAILABLE = True
+except ImportError:
+    _FITZ_AVAILABLE = False
+
+# Optional: pytesseract for image-based OCR (needs Tesseract binary)
+try:
+    import pytesseract
+    from PIL import Image
+    _TESSERACT_AVAILABLE = True
+except ImportError:
+    _TESSERACT_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(
@@ -73,43 +85,87 @@ def extract_text_from_pdf(pdf_path: Union[str, Path]) -> str:
 
 def extract_text_with_ocr(pdf_path: Union[str, Path]) -> str:
     """
-    Extract text from a scanned PDF using OCR (pytesseract).
-    
+    Extract text from a scanned PDF using PyMuPDF (fitz).
+
+    Strategy:
+    1. Use PyMuPDF's built-in text extraction (works on most PDFs including
+       many scanned ones that have an invisible text layer from the scanner).
+    2. If a page yields very little text AND Tesseract is available, render
+       the page to a high-resolution image and run pytesseract on it.
+    3. If neither PyMuPDF nor Tesseract can extract text, return whatever
+       was collected (may be empty).
+
+    This approach removes the dependency on Poppler (pdf2image) entirely.
+
     Args:
         pdf_path: Path to the PDF file
-        
+
     Returns:
         Extracted raw text as string
-        
+
     Raises:
-        PDFExtractionError: If OCR extraction fails
+        PDFExtractionError: If extraction fails
     """
+    if not _FITZ_AVAILABLE:
+        raise PDFExtractionError(
+            "PyMuPDF (fitz) is required for OCR extraction. "
+            "Install with: pip install PyMuPDF"
+        )
+
     try:
         pdf_path = Path(pdf_path)
         if not pdf_path.exists():
             raise PDFExtractionError(f"PDF file not found: {pdf_path}")
-        
-        logger.info(f"Converting PDF to images for OCR: {pdf_path}")
-        images = convert_from_path(str(pdf_path), dpi=300)
-        
+
+        logger.info(f"Opening PDF with PyMuPDF for OCR extraction: {pdf_path}")
+        doc = fitz.open(str(pdf_path))
         text_content = []
-        
-        for page_num, image in enumerate(images, start=1):
-            try:
-                logger.debug(f"Performing OCR on page {page_num}")
-                page_text = pytesseract.image_to_string(image, lang='eng')
-                if page_text and page_text.strip():
-                    text_content.append(page_text)
-            except Exception as e:
-                logger.warning(f"OCR failed for page {page_num}: {e}")
+
+        for page_num in range(len(doc)):
+            page = doc[page_num]
+
+            # --- Attempt 1: PyMuPDF built-in text extraction ---------------
+            page_text = page.get_text("text")
+
+            if page_text and len(page_text.strip()) > 30:
+                # Good enough — use it directly
+                text_content.append(page_text)
+                logger.debug(f"Page {page_num + 1}: extracted {len(page_text)} chars via PyMuPDF")
                 continue
-        
+
+            # --- Attempt 2: render to image + Tesseract OCR ----------------
+            if _TESSERACT_AVAILABLE:
+                try:
+                    logger.debug(f"Page {page_num + 1}: low text, falling back to Tesseract OCR")
+                    # Render at 300 DPI for good OCR quality
+                    mat = fitz.Matrix(300 / 72, 300 / 72)
+                    pix = page.get_pixmap(matrix=mat)
+                    img = Image.open(BytesIO(pix.tobytes("png")))
+                    ocr_text = pytesseract.image_to_string(img, lang="eng")
+                    if ocr_text and ocr_text.strip():
+                        text_content.append(ocr_text)
+                        logger.debug(f"Page {page_num + 1}: extracted {len(ocr_text)} chars via Tesseract")
+                        continue
+                except Exception as e:
+                    logger.warning(f"Tesseract OCR failed on page {page_num + 1}: {e}")
+
+            # --- Fallback: use whatever PyMuPDF got (even if short) --------
+            if page_text and page_text.strip():
+                text_content.append(page_text)
+                logger.debug(f"Page {page_num + 1}: using {len(page_text)} chars (partial)")
+            else:
+                logger.warning(f"Page {page_num + 1}: no text could be extracted")
+
+        doc.close()
+
         if not text_content:
-            logger.warning("No text extracted using OCR")
+            logger.warning("No text extracted from any page")
             return ""
-        
+
         return "\n".join(text_content)
-    
+
+    except PDFExtractionError:
+        raise
     except Exception as e:
         logger.error(f"Error during OCR extraction: {e}")
         raise PDFExtractionError(f"Failed to extract text with OCR: {e}")
