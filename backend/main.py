@@ -38,6 +38,7 @@ from backend.api.routes_analysis import router as analysis_router
 from backend.api.routes_compare import router as compare_router
 from backend.api.routes_tasks import router as tasks_router
 from backend.api.routes_upload import router as upload_router
+from backend.api.chat_routes import router as chat_router
 from backend.config import (
     API_DESCRIPTION,
     API_TITLE,
@@ -47,6 +48,7 @@ from backend.config import (
 )
 from backend.utils.file_storage import ensure_storage_dir
 from backend.utils.logger import configure_logging, get_logger
+from backend.utils.error_handler import AppError, app_error_handler
 
 # ---------------------------------------------------------------------------
 # Logging — configure before anything else emits records
@@ -102,6 +104,8 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+app.add_exception_handler(AppError, app_error_handler)
+
 # ---------------------------------------------------------------------------
 # CORS middleware
 # ---------------------------------------------------------------------------
@@ -131,6 +135,7 @@ app.include_router(compare_router)
 app.include_router(upload_router)
 app.include_router(analysis_router)
 app.include_router(tasks_router)
+app.include_router(chat_router)
 
 
 # ---------------------------------------------------------------------------

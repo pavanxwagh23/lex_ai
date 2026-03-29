@@ -183,3 +183,19 @@ def get_file_text(contract_id: str) -> tuple[str, Path]:
             f"File for contract '{contract_id}' not found on disk: {file_path}"
         )
     return str(file_path), file_path
+
+from backend.ai_client.ai_pipeline import extract_text
+
+def get_contract_text(contract_id: str) -> str:
+    """
+    Fetch contract text from storage.
+    For now, simulate with local file read or mock.
+    """
+    try:
+        file_path_str, _ = get_file_text(contract_id)
+        return extract_text(file_path_str)
+    except Exception as e:
+        logger.warning("Failed to extract text for %s: %s", contract_id, e)
+        # Mock fallback for development if file not found
+        return "This is a mock contract text for " + contract_id
+
