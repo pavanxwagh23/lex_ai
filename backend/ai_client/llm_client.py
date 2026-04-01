@@ -1,20 +1,19 @@
 """
 backend/ai_client/llm_client.py
 ================================
-Abstraction layer for Large Language Model (LLM) interactions.
+LLM Client — Zero-LLM Mode.
 
-Provides a unified ``LLMClient`` class that can be swapped between:
+All external LLM dependencies (OpenAI, Ollama, Llama 3) have been
+replaced with a deterministic RuleBasedResponder that generates
+instant responses with zero GPU/network usage.
 
-- **Mock mode** — instant canned responses (default, no API key needed)
-- **OpenAI mode** — calls OpenAI API if ``OPENAI_API_KEY`` is set
-
-This allows the chat service to generate natural language responses for
-general legal questions without coupling to a specific LLM provider.
+Setting USE_LOCAL_LLM in .env is no longer required.
 """
 
 from __future__ import annotations
 
 import os
+import re
 from typing import Optional
 
 from backend.utils.logger import get_logger
@@ -22,150 +21,167 @@ from backend.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-class LLMClient:
-    """Thin wrapper around an LLM provider.
+# ---------------------------------------------------------------------------
+# Rule-Based Responder
+# ---------------------------------------------------------------------------
 
-    Parameters
-    ----------
-    api_key : str, optional
-        OpenAI API key.  Falls back to ``os.environ["OPENAI_API_KEY"]``.
-        If neither is available, the client operates in **mock mode**.
-    model : str
-        OpenAI model identifier (default ``"gpt-3.5-turbo"``).
+class RuleBasedResponder:
+    """
+    A deterministic, zero-dependency responder that matches user prompts
+    to pre-written legal knowledge responses via keyword rules.
+
+    This completely replaces the LLM client with instant, offline responses.
     """
 
-    def __init__(
-        self,
-        api_key: Optional[str] = None,
-        model: str = "gpt-3.5-turbo",
-    ) -> None:
-        self._api_key: Optional[str] = api_key or os.getenv("OPENAI_API_KEY")
-        self._model: str = model
-        self._client = None  # lazy-loaded OpenAI client
+    _RULES: list[tuple[re.Pattern, str]] = [
+        # --- Greetings ---
+        (re.compile(r"\b(hi|hello|hey|greetings|good\s*(morning|evening|afternoon))\b", re.I),
+         "Hello! I'm Lex AI, your intelligent legal document assistant. "
+         "Upload a contract or paste text in the sidebar to get started. "
+         "I can summarize it, identify risks, classify clauses, and compare documents."),
 
-        if self._api_key:
-            logger.info("LLMClient initialised in LIVE mode (model=%s).", model)
-        else:
-            logger.info(
-                "LLMClient initialised in MOCK mode — "
-                "set OPENAI_API_KEY for real LLM responses."
-            )
+        # --- Identity ---
+        (re.compile(r"\b(who|what)\s+are\s+you\b|\byour\s+name\b|tell me about yourself", re.I),
+         "I'm Lex AI — a fully offline, privacy-first legal document intelligence system. "
+         "I use trained machine learning models to analyze your contracts with zero cloud dependency."),
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
+        # --- Warranty ---
+        (re.compile(r"\bwarrant(y|ies|s)?\b", re.I),
+         "**Warranty** is a legally binding promise made by one party to another "
+         "that certain facts or conditions are true. In contracts, warranties can be:\n\n"
+         "- **Express Warranty**: Explicitly stated in writing.\n"
+         "- **Implied Warranty**: Automatically granted by law even if not written.\n"
+         "- **Warranty of Merchantability**: The product works as expected.\n\n"
+         "⚠️ *Always consult a qualified attorney for specific legal advice.*"),
+
+        # --- NDA ---
+        (re.compile(r"\b(nda|non.?disclosure|confidentiality\s+agreement)\b", re.I),
+         "**NDA (Non-Disclosure Agreement)** is a legal contract that prevents parties "
+         "from sharing confidential information with third parties. Key components:\n\n"
+         "- Definition of what constitutes 'confidential information'.\n"
+         "- Duration of the confidentiality obligation.\n"
+         "- Permitted disclosures (e.g., to attorneys, regulators).\n"
+         "- Remedies for breach (injunctions, damages).\n\n"
+         "⚠️ *Always consult a qualified attorney for specific legal advice.*"),
+
+        # --- Liability ---
+        (re.compile(r"\b(liabilit(y|ies)|liable)\b", re.I),
+         "**Liability** refers to a party's legal responsibility for their actions or omissions. "
+         "In contracts:\n\n"
+         "- **Limitation of Liability**: Caps the maximum damages one party can owe.\n"
+         "- **Indemnification**: One party agrees to cover losses of the other.\n"
+         "- **Consequential Damages**: Indirect losses flowing from a breach.\n\n"
+         "A broad liability clause with no cap is a significant **HIGH RISK** flag."),
+
+        # --- Termination ---
+        (re.compile(r"\b(terminat(e|ion|ing)|end\s+the\s+(contract|agreement)|cancell?ation)\b", re.I),
+         "**Termination clauses** define the conditions under which a contract can be ended. Types:\n\n"
+         "- **Termination for Cause**: One party breaches obligations.\n"
+         "- **Termination for Convenience**: Either party can exit without reason.\n"
+         "- **Notice Period**: Required advance warning before termination (e.g., 30 days).\n\n"
+         "Always check what happens to deliverables, IP, and payments after termination."),
+
+        # --- Indemnification ---
+        (re.compile(r"\bindemni(f(y|ication)|t(y|ies))?\b", re.I),
+         "**Indemnification** is an obligation by one party to compensate the other for "
+         "harm, loss, or liability arising from specific events. It typically covers:\n\n"
+         "- Third-party claims and lawsuits.\n"
+         "- IP infringement claims.\n"
+         "- Negligence by either party.\n\n"
+         "Broad, one-sided indemnification clauses with no cap are HIGH RISK."),
+
+        # --- Force Majeure ---
+        (re.compile(r"\bforce\s+majeure\b|\bact\s+of\s+god\b", re.I),
+         "**Force Majeure** ('superior force') excuses a party from performing contractual "
+         "obligations when extraordinary events beyond their control occur:\n\n"
+         "- Natural disasters, earthquakes, floods.\n"
+         "- Wars, pandemics, government actions.\n"
+         "- Strikes or labor disputes.\n\n"
+         "Check whether the clause is too broad — some parties use it to avoid any difficult obligation."),
+
+        # --- Governing Law ---
+        (re.compile(r"\b(governing\s+law|jurisdiction|arbitration|dispute\s+resolution)\b", re.I),
+         "**Governing Law / Dispute Resolution** clauses specify:\n\n"
+         "- Which country or state's laws apply to the contract.\n"
+         "- Where disputes must be filed (court jurisdiction).\n"
+         "- Whether disputes go to arbitration (private) or litigation (court).\n\n"
+         "⚠️ A clause requiring disputes to be filed in a foreign jurisdiction is a significant risk."),
+
+        # --- Non-Compete ---
+        (re.compile(r"\b(non.?compete|non.?solicitation|restraint\s+of\s+trade)\b", re.I),
+         "**Non-Compete clauses** restrict one party from working with competitors "
+         "after the contract ends. Enforceability depends on:\n\n"
+         "- **Geographic scope**: City, country, or worldwide?\n"
+         "- **Duration**: 6 months is standard; 3+ years is often unenforceable.\n"
+         "- **Scope**: Does it cover the entire industry or just direct competitors?\n\n"
+         "Many jurisdictions (like California) ban non-competes entirely for employees."),
+
+        # --- What can you do ---
+        (re.compile(r"\bwhat\s+can\s+you\s+do\b|\byour\s+capabilities\b|\bhelp\s*me\b", re.I),
+         "I can perform the following document analysis tasks:\n\n"
+         "- 📄 **Summarize**: *'Summarize this contract'*\n"
+         "- ⚠️ **Risk Analysis**: *'Find risks in this document'*\n"
+         "- 🗂️ **Clause Mapping**: *'List all clauses in this contract'*\n"
+         "- 🔍 **Compare**: *'Compare these two documents'*\n\n"
+         "Upload a PDF or DOCX using the sidebar to get started!"),
+
+        # --- Intellectual Property ---
+        (re.compile(r"\b(intellectual\s+property|ip\s+rights|copyright|patent|trademark)\b", re.I),
+         "**Intellectual Property (IP)** clauses govern ownership of creative work:\n\n"
+         "- **Work-for-Hire**: IP created during the contract belongs to the client.\n"
+         "- **License**: One party grants permission to use IP without transferring ownership.\n"
+         "- **Assignment**: Full ownership of IP is transferred permanently.\n\n"
+         "⚠️ Always clarify who owns IP created *during* and *after* the contract period."),
+
+        # --- Payment ---
+        (re.compile(r"\b(payment|invoice|compensation|fee|rate|salary)\b", re.I),
+         "**Payment Terms** define when and how money changes hands:\n\n"
+         "- **Net 30/60/90**: Payment due within 30, 60, or 90 days of invoice.\n"
+         "- **Milestone-based**: Payment tied to project deliverable completion.\n"
+         "- **Late Payment**: Many contracts include interest on overdue payments.\n\n"
+         "Check for automatic price escalation clauses that can increase rates without explicit consent."),
+    ]
 
     def generate(self, prompt: str, system_prompt: Optional[str] = None) -> str:
-        """Generate a text response from the LLM.
+        """Match prompt against rules and return the best matching response."""
+        for pattern, response in self._RULES:
+            if pattern.search(prompt):
+                logger.info("RuleBasedResponder: matched pattern '%s'", pattern.pattern[:40])
+                return response
 
-        Parameters
-        ----------
-        prompt : str
-            The user-facing prompt / question.
-        system_prompt : str, optional
-            System-level instruction (e.g. "You are a legal AI assistant").
-
-        Returns
-        -------
-        str
-            LLM response text.
-        """
-        if not self._api_key:
-            return self._mock_response(prompt)
-
-        return self._openai_response(prompt, system_prompt)
-
-    # ------------------------------------------------------------------
-    # OpenAI integration
-    # ------------------------------------------------------------------
-
-    def _openai_response(self, prompt: str, system_prompt: Optional[str] = None) -> str:
-        """Call the OpenAI ChatCompletion API."""
-        try:
-            if self._client is None:
-                from openai import OpenAI
-                self._client = OpenAI(api_key=self._api_key)
-
-            messages = []
-            if system_prompt:
-                enhanced_system_prompt = (
-                    f"{system_prompt}\n\n"
-                    "CRITICAL INSTRUCTIONS:\n"
-                    "- Explain legal concepts in simple, plain English.\n"
-                    "- Avoid complex legal jargon.\n"
-                    "- Keep answers concise and precise (max 5 lines where possible).\n"
-                    "- Output directly; do not hallucinate JSON wrappers unless explicitly requested."
-                )
-                messages.append({"role": "system", "content": enhanced_system_prompt})
-            else:
-                messages.append({
-                    "role": "system", 
-                    "content": "You are a precise, deterministic legal assistant. Keep answers concise, avoid jargon, max 5 lines."
-                })
-            
-            messages.append({"role": "user", "content": prompt})
-
-            response = self._client.chat.completions.create(
-                model=self._model,
-                messages=messages,
-                max_tokens=1024,
-                temperature=0.0,  # Enforce deterministic outputs
-            )
-
-            result = response.choices[0].message.content.strip()
-            logger.info("LLM response generated (%d chars).", len(result))
-            return result
-
-        except Exception as exc:
-            logger.warning("OpenAI call failed (%s), falling back to mock.", exc)
-            return self._mock_response(prompt)
-
-    # ------------------------------------------------------------------
-    # Mock fallback
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def _mock_response(prompt: str) -> str:
-        """Return a helpful mock response when no LLM is available."""
-        prompt_lower = prompt.lower()
-
-        if any(kw in prompt_lower for kw in ("hello", "hi", "hey", "greet")):
-            return (
-                "Hello! I'm Lex AI, your legal document assistant. "
-                "I can summarize contracts, detect risks, compare documents, "
-                "and answer general legal questions. How can I help you today?"
-            )
-
-        if any(kw in prompt_lower for kw in ("help", "what can you do", "capabilities")):
-            return (
-                "I can help you with the following:\n\n"
-                "• **Summarize** — Get a structured summary of your contract\n"
-                "• **Risk Analysis** — Identify legal risks and red flags\n"
-                "• **Compare** — Compare two contracts side by side\n"
-                "• **General Questions** — Ask me anything about legal terms\n\n"
-                "Try saying: 'Summarize this contract' or 'What are the risks?'"
-            )
-
+        # Default fallback
+        logger.info("RuleBasedResponder: no rule matched, returning fallback.")
         return (
-            "I'm Lex AI, your legal document assistant. "
-            "I can summarize contracts, analyze risks, and compare documents. "
-            "Try asking me to 'summarize this contract' or 'analyze risks'. "
-            "For full LLM-powered responses, set the OPENAI_API_KEY environment variable."
+            "I'm currently operating in **offline, document-analysis mode**. "
+            "I can analyze documents you upload — try:\n\n"
+            "- *'Summarize this contract'*\n"
+            "- *'Find legal risks'*\n"
+            "- *'List all clauses'*\n\n"
+            "For general legal advice, please consult a qualified attorney."
         )
 
 
 # ---------------------------------------------------------------------------
-# Module-level singleton (lazy-loaded)
+# Singleton accessor (drop-in compatible with existing code)
 # ---------------------------------------------------------------------------
-_llm_client: Optional[LLMClient] = None
+
+_responder: Optional[RuleBasedResponder] = None
+
+
+class LLMClient:
+    """Drop-in compatible wrapper around the RuleBasedResponder."""
+
+    def __init__(self, api_key=None, model=None):
+        self._responder = RuleBasedResponder()
+        logger.info("LLMClient initialised in ZERO-LLM mode (RuleBasedResponder).")
+
+    def generate(self, prompt: str, system_prompt: Optional[str] = None) -> str:
+        return self._responder.generate(prompt, system_prompt)
 
 
 def get_llm_client() -> LLMClient:
-    """Return the global LLMClient singleton.
-
-    Creates the instance on first call and reuses it thereafter.
-    """
-    global _llm_client
-    if _llm_client is None:
-        _llm_client = LLMClient()
-    return _llm_client
+    """Return a singleton LLMClient instance."""
+    global _responder
+    if _responder is None:
+        _responder = LLMClient()
+    return _responder

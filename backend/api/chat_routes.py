@@ -96,7 +96,6 @@ async def process_chat(
             raise AppError(code=400, message="Contract text exceeds maximum length of 50000 characters.", status_code=400)
 
         # Flow: Document Context Resolution
-        fetched_text = None
         if chat_request.contract_id:
             fetched_text = get_contract_text(chat_request.contract_id)
             payload["text"] = fetched_text
@@ -104,7 +103,9 @@ async def process_chat(
         elif text_provided:
             update_session(session_id, {"last_contract_text": text_provided})
         elif intent in ("SUMMARY", "RISK", "COMPARE"): 
-            raise AppError(code=400, message="Please provide contract text or contract_id", status_code=400)
+            # Smart Fallback: If no document is uploaded, it MUST be a general knowledge query!
+            logger.info("[%s] No context provided for %s. Downgrading to GENERAL intent.", request_id, intent)
+            intent = "GENERAL"
 
         # Unified response metadata structure
         meta = {

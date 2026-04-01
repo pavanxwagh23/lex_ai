@@ -60,18 +60,36 @@ def analyze_risk(paragraphs: List[str]) -> Dict[str, Any]:
 
     risky_count = sum(1 for r in risks if r.get("severity") in ("high", "HIGH"))
 
-    # Issue 5: LLM Augmented Response
-    logger.info("risk_service: generating LLM explanation of the risks")
+    # Zero-LLM: deterministic explanation from risk category templates
+    _RISK_EXPLANATIONS = {
+        "liability": "⚠️ A **Liability** clause was detected. Uncapped liability exposes a party to unlimited financial losses. Look for a clear liability cap (e.g., 'not to exceed total fees paid').",
+        "termination": "⚠️ A **Termination** clause was detected. Ensure notice periods are fair and check whether either party can exit 'for convenience' without cause.",
+        "confidentiality": "⚠️ A **Confidentiality** clause was detected. Verify the definition of confidential information is not overly broad and check the duration of the obligation.",
+        "indemnification": "⚠️ An **Indemnification** clause was detected. One-sided indemnification without a liability cap creates significant financial exposure.",
+        "dispute_resolution": "⚠️ A **Dispute Resolution** clause was detected. Mandatory foreign arbitration or jurisdiction clauses can dramatically increase enforcement costs.",
+        "non_compete": "⚠️ A **Non-Compete** clause was detected. Review the duration, geographic scope, and industry scope. Overly broad non-competes may be unenforceable.",
+        "intellectual_property": "⚠️ An **Intellectual Property** clause was detected. Confirm who owns IP created during and after the contract, including pre-existing IP.",
+        "force_majeure": "⚠️ A **Force Majeure** clause was detected. Check if it's too broadly defined, allowing a party to exit obligations too easily.",
+        "payment_terms": "⚠️ A **Payment Terms** clause was detected. Watch for hidden auto-escalation, late payment penalties, or unfavorable invoice windows.",
+        "governing_law": "⚠️ A **Governing Law** clause was detected. Foreign jurisdiction increases legal costs and complexity significantly.",
+        "warranties": "⚠️ A **Warranties** clause was detected. Ensure warranties are mutual and check for any blanket disclaimer of all implied warranties.",
+    }
+
     if risks:
-        risk_descriptions = [r.get("description", "Unknown risk") for r in risks]
-        prompt = f"Explain these legal risks in simple terms:\n{risk_descriptions}"
-        client = get_llm_client()
-        explanation = client.generate(
-            prompt=prompt, 
-            system_prompt="You are a legal advisor explaining risks simply. Do not use complex jargon."
-        )
+        parts = []
+        for r in risks:
+            cat = r.get("category", r.get("type", "")).lower()
+            # Find the best matching template
+            matched_template = next(
+                (v for k, v in _RISK_EXPLANATIONS.items() if k in cat), None
+            )
+            if matched_template:
+                parts.append(matched_template)
+            else:
+                parts.append(f"⚠️ A legal risk was detected in category **{cat}**. Review carefully.")
+        explanation = "\n\n".join(dict.fromkeys(parts))  # Deduplicate
     else:
-        explanation = "No significant legal risks were identified in the provided text."
+        explanation = "✅ No significant legal risks were identified in the provided text."
 
     return {
         "risk_score": risk_score,

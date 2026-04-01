@@ -15,6 +15,7 @@ from backend.services.summary_service import generate_summary
 from backend.services.risk_service import analyze_risk_from_text
 from backend.services.compare_service import compare_contracts
 from backend.services.chat_service import generate_chat_response
+from backend.services.clause_service import map_clauses
 from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -91,6 +92,28 @@ def route_request(intent: str, message: str, payload: Dict[str, Any]) -> Dict[st
             "data": data
         }
 
+    elif intent == "CLAUSE_MAP":
+        text = payload.get("text")
+        if not text:
+            return {
+                "response": "Please upload or provide a contract to map its clauses.",
+                "data": None
+            }
+        data = map_clauses(text)
+        error = data.get("error")
+        if error:
+            return {"response": f"⚠️ {error}", "data": None}
+        n_types = data.get("unique_clause_types", 0)
+        n_paras = data.get("total_paragraphs", 0)
+        return {
+            "response": (
+                f"🗂️ **Clause Map complete!** Found **{n_types} unique clause types** "
+                f"across **{n_paras} paragraphs** using your trained ML model. "
+                "See the structured breakdown below."
+            ),
+            "data": data
+        }
+
     elif intent == "DRAFT":
         return {
             "response": "Drafting contracts is currently a beta feature. Please use a legally reviewed template.",
@@ -98,6 +121,6 @@ def route_request(intent: str, message: str, payload: Dict[str, Any]) -> Dict[st
         }
 
     else:
-        # Fallback to general LLM response
+        # Fallback to general rule-based response
         session_id = payload.get("session_id")
         return generate_chat_response(message, session_id=session_id)

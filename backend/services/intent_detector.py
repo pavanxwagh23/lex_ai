@@ -22,7 +22,6 @@ import re
 from typing import List, Tuple
 
 from backend.utils.logger import get_logger
-from backend.ai_client.llm_client import get_llm_client
 
 logger = get_logger(__name__)
 
@@ -65,7 +64,18 @@ _INTENT_PATTERNS: List[Tuple[str, re.Pattern]] = [
         r"|template|boilerplate",
         re.IGNORECASE,
     )),
+
+    # ── CLAUSE_MAP ──────────────────────────────────────────────────────
+    ("CLAUSE_MAP", re.compile(
+        r"(list|map|identify|show|find|detect)\s+(all\s+)?(the\s+)?"
+        r"(clause|section|provision|article|part)(s|(\s+type))?"
+        r"|what\s+(type|kind)s?\s+of\s+(clause|section|provision)"
+        r"|classify\s+(the\s+)?(contract|document|clauses?)"
+        r"|break\s*down\s+(the\s+)?(clause|section|contract)",
+        re.IGNORECASE,
+    )),
 ]
+
 
 
 def detect_intent_with_llm(message: str) -> str:
@@ -128,10 +138,10 @@ def detect_intent(message: str) -> Tuple[str, float]:
             confidence = 1.0
             break
 
-    # 2. If confidence < 0.6 -> fallback to LLM
+    # 2. If no regex match -> instantly default to GENERAL
     if confidence < 0.6:
-        intent = detect_intent_with_llm(cleaned)
-        confidence = 0.85  # Assumed LLM confidence
+        intent = "GENERAL"
+        confidence = 0.5  # Assumed default intent
 
     logger.info("Final Intent: %s (confidence: %.2f) for message: %r", intent, confidence, cleaned[:80])
     return intent, confidence
