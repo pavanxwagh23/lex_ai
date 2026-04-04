@@ -486,5 +486,125 @@ async def summarize_endpoint(request: SummarizeRequest):
         raise HTTPException(status_code=500, detail=f"Summarization failed: {exc}")
 
 
+
+# ---------------------------------------------------------------------------
+# Chat endpoint — routes messages through the fine-tuned Lex AI legal model
+# ---------------------------------------------------------------------------
+
+import uuid as _uuid
+import re as _re
+
+# In-memory session store: {session_id: {"messages": [...], "context": str}}
+_sessions: Dict[str, Dict] = {}
+
+LOCAL_LLM_URL = os.getenv("LOCAL_LLM_URL", "http://localhost:11435/v1")
+LOCAL_LLM_MODEL = os.getenv("LOCAL_LLM_MODEL", "lex-ai-legal")
+USE_LOCAL_LLM = os.getenv("USE_LOCAL_LLM", "true").lower() == "true"
+
+import httpx as _httpx
+
+class ChatRequest(BaseModel):
+    message: str
+    session_id: Optional[str] = None
+    contract_id: Optional[str] = None
+    extra_context: Optional[Dict[str, Any]] = {}
+
+
+def _detect_intent(message: str) -> str:
+    msg = message.lower()
+    if any(w in msg for w in ["risk", "danger", "flag", "problematic", "liability", "dangerous", "issue"]):
+        return "RISK"
+    if any(w in msg for w in ["summarize", "summary", "summarise", "key points", "overview", "tldr", "brief"]):
+        return "SUMMARY"
+    if any(w in msg for w in ["clause", "classify", "identify clause", "clause type"]):
+        return "CLAUSE_MAP"
+    return "GENERAL"
+
+
+def _build_system_prompt(intent: str, context: str) -> str:
+    base = (
+        "You are Lex AI, an expert legal assistant specializing in contract analysis, "
+        "risk identification, and legal document summarization. Answer clearly and professionally."
+    )
+    if context:
+        base += f"\n\nThe user has provided the following contract text for analysis:\n\n---\n{context[:3000]}\n---"
+    if intent == "RISK":
+        base += "\n\nFocus on identifying legal risks, liability issues, and problematic clauses."
+    elif intent == "SUMMARY":
+        base += "\n\nFocus on providing a concise, structured summary with key points."
+    return base
+
+
+@app.post("/chat")
+async def chat_endpoint(request: ChatRequest):
+    """
+    Main conversational chat endpoint.
+    Routes through the fine-tuned Lex AI legal model running on port 11435.
+    """
+    session_id = request.session_id or str(_uuid.uuid4())
+
+    # Init or retrieve session
+    if session_id not in _sessions:
+        _sessions[session_id] = {"messages": [], "context": ""}
+
+    session = _sessions[session_id]
+
+    # Absorb any new context from this request
+    extra = request.extra_context or {}
+    if "text" in extra and extra["text"]:
+        session["context"] = extra["text"]
+
+    intent = _detect_intent(request.message)
+    system_prompt = _build_system_prompt(intent, session["context"])
+
+    # Build messages list for the LLM
+    llm_messages = [{"role": "system", "content": system_prompt}]
+    # Include last 6 messages of history for context window efficiency
+    for m in session["messages"][-6:]:
+        llm_messages.append({"role": m["role"], "content": m["content"]})
+    llm_messages.append({"role": "user", "content": request.message})
+
+    # Save user message to session history
+    session["messages"].append({"role": "user", "content": request.message})
+
+    try:
+        async with _httpx.AsyncClient(timeout=120.0) as client:
+            llm_resp = await client.post(
+                f"{LOCAL_LLM_URL}/chat/completions",
+                json={
+                    "model": LOCAL_LLM_MODEL,
+                    "messages": llm_messages,
+                    "max_tokens": 512,
+                    "temperature": 0.7,
+                },
+            )
+            llm_resp.raise_for_status()
+            llm_data = llm_resp.json()
+            reply = llm_data["choices"][0]["message"]["content"].strip()
+    except Exception as exc:
+        logger.error("LLM call failed: %s", exc)
+        return {
+            "message": f"⚠️ Could not reach the Lex AI model server. Make sure `serve.py` is running on port 11435. Error: {exc}",
+            "intent": intent,
+            "data": {},
+            "meta": {"status": "error", "intent": intent, "confidence": 0.0, "task_id": None}
+        }
+
+    # Save assistant reply to session history
+    session["messages"].append({"role": "assistant", "content": reply})
+
+    return {
+        "message": reply,
+        "intent": intent,
+        "data": {},
+        "meta": {
+            "status": "completed",
+            "intent": intent,
+            "confidence": 1.0,
+            "task_id": None
+        }
+    }
+
+
 if __name__ == "__main__":
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
