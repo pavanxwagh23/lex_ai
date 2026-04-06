@@ -78,7 +78,7 @@ class ChatResponse(BaseModel):
 
 def load_model():
     """Load the fine-tuned model from disk."""
-    from transformers import AutoTokenizer, AutoModelForCausalLM
+    from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
     from peft import PeftModel
     import torch
 
@@ -94,23 +94,28 @@ def load_model():
     # 1. Use pure bfloat16/float16 to speed up tensor cores and reduce VRAM bottlenecks
     dtype = torch.bfloat16 if device == "cuda" and torch.cuda.is_bf16_supported() else torch.float16
 
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=dtype,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True
+    )
+
     base_model = AutoModelForCausalLM.from_pretrained(
         base_model_name,
-        torch_dtype=dtype,
+        device_map="auto",
+        quantization_config=quantization_config,
         trust_remote_code=False,
-        # 2. Use PyTorch's native Scaled Dot Product Attention instead of slow 'eager' mechanism
+        # 2. Use SDPA instead of flash_attention_2 due to missing flash-attn library on Windows
         attn_implementation="sdpa",  
     )
     
     model = PeftModel.from_pretrained(base_model, str(MODEL_DIR))
     
-    # 3. Massively improve speed by permanently merging the adapter into the base network
-    print("Folding LoRA adapters into base model for maximum inference speed...")
-    model = model.merge_and_unload()
+    # 3. Massively improve speed footprint by keeping 4-bit base + Adapter, skip merge_and_unload
     model.eval()
 
-    model = model.to(device)
-    print(f"✅ Lex AI legal model loaded on {device}")
+    print(f"✅ Lex AI legal model loaded (4-bit + FlashAttn2) on {device}")
     return tokenizer, model
 
 

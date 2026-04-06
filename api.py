@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import tempfile
@@ -496,6 +496,7 @@ import re as _re
 
 # In-memory session store: {session_id: {"messages": [...], "context": str}}
 _sessions: Dict[str, Dict] = {}
+_tasks: Dict[str, Any] = {}
 
 LOCAL_LLM_URL = os.getenv("LOCAL_LLM_URL", "http://localhost:11435/v1")
 LOCAL_LLM_MODEL = os.getenv("LOCAL_LLM_MODEL", "lex-ai-legal")
@@ -535,11 +536,46 @@ def _build_system_prompt(intent: str, context: str) -> str:
     return base
 
 
+async def _process_chat_task(task_id: str, session_id: str, llm_messages: list, intent: str):
+    """Background task to fetch LLM response and update task status."""
+    try:
+        async with _httpx.AsyncClient(timeout=None) as client:
+            llm_resp = await client.post(
+                f"{LOCAL_LLM_URL}/chat/completions",
+                json={
+                    "model": LOCAL_LLM_MODEL,
+                    "messages": llm_messages,
+                    "max_tokens": 512,
+                    "temperature": 0.7,
+                },
+            )
+            if llm_resp.status_code == 200:
+                llm_data = llm_resp.json()
+                reply = llm_data["choices"][0]["message"]["content"].strip()
+                result = {
+                    "message": reply,
+                    "intent": intent,
+                    "data": {},
+                    "meta": {
+                        "status": "completed",
+                        "intent": intent,
+                        "confidence": 1.0,
+                        "task_id": task_id
+                    }
+                }
+                _sessions[session_id]["messages"].append({"role": "assistant", "content": reply})
+                _tasks[task_id] = {"status": "completed", "result": result}
+            else:
+                _tasks[task_id] = {"status": "failed", "error": f"LLM API returned {llm_resp.status_code}"}
+    except Exception as exc:
+        logger.error("Background LLM call failed: %s", exc)
+        _tasks[task_id] = {"status": "failed", "error": str(exc)}
+
 @app.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+async def chat_endpoint(request: ChatRequest, background_tasks: BackgroundTasks):
     """
     Main conversational chat endpoint.
-    Routes through the fine-tuned Lex AI legal model running on port 11435.
+    Routes through the fine-tuned Lex AI legal model running on port 11435 via background polling.
     """
     session_id = request.session_id or str(_uuid.uuid4())
 
@@ -567,43 +603,27 @@ async def chat_endpoint(request: ChatRequest):
     # Save user message to session history
     session["messages"].append({"role": "user", "content": request.message})
 
-    try:
-        async with _httpx.AsyncClient(timeout=None) as client:
-            llm_resp = await client.post(
-                f"{LOCAL_LLM_URL}/chat/completions",
-                json={
-                    "model": LOCAL_LLM_MODEL,
-                    "messages": llm_messages,
-                    "max_tokens": 512,
-                    "temperature": 0.7,
-                },
-            )
-            llm_resp.raise_for_status()
-            llm_data = llm_resp.json()
-            reply = llm_data["choices"][0]["message"]["content"].strip()
-    except Exception as exc:
-        logger.error("LLM call failed: %s", exc)
-        return {
-            "message": f"⚠️ Could not reach the Lex AI model server. Make sure `serve.py` is running on port 11435. Error: {exc}",
-            "intent": intent,
-            "data": {},
-            "meta": {"status": "error", "intent": intent, "confidence": 0.0, "task_id": None}
-        }
-
-    # Save assistant reply to session history
-    session["messages"].append({"role": "assistant", "content": reply})
+    task_id = str(_uuid.uuid4())
+    _tasks[task_id] = {"status": "processing"}
+    background_tasks.add_task(_process_chat_task, task_id, session_id, llm_messages, intent)
 
     return {
-        "message": reply,
+        "message": "Processing your request...",
         "intent": intent,
         "data": {},
         "meta": {
-            "status": "completed",
+            "status": "processing",
             "intent": intent,
             "confidence": 1.0,
-            "task_id": None
+            "task_id": task_id
         }
     }
+
+@app.get("/chat/result/{task_id}")
+async def get_chat_result(task_id: str):
+    if task_id not in _tasks:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return _tasks[task_id]
 
 
 if __name__ == "__main__":
