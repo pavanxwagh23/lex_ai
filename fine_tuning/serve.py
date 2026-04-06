@@ -89,16 +89,26 @@ def load_model():
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    
+    # 1. Use pure bfloat16/float16 to speed up tensor cores and reduce VRAM bottlenecks
+    dtype = torch.bfloat16 if device == "cuda" and torch.cuda.is_bf16_supported() else torch.float16
+
     base_model = AutoModelForCausalLM.from_pretrained(
         base_model_name,
-        torch_dtype="auto",
+        torch_dtype=dtype,
         trust_remote_code=False,
-        attn_implementation="eager",  # Required to avoid DynamicCache incompatibility
+        # 2. Use PyTorch's native Scaled Dot Product Attention instead of slow 'eager' mechanism
+        attn_implementation="sdpa",  
     )
+    
     model = PeftModel.from_pretrained(base_model, str(MODEL_DIR))
+    
+    # 3. Massively improve speed by permanently merging the adapter into the base network
+    print("Folding LoRA adapters into base model for maximum inference speed...")
+    model = model.merge_and_unload()
     model.eval()
 
-    device = "cuda" if __import__("torch").cuda.is_available() else "cpu"
     model = model.to(device)
     print(f"✅ Lex AI legal model loaded on {device}")
     return tokenizer, model
@@ -138,6 +148,11 @@ def generate_response(tokenizer, model, messages: List[Message], max_new_tokens:
     # Decode only the newly generated tokens (skip the prompt)
     new_tokens = outputs[0][inputs["input_ids"].shape[-1]:]
     reply = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
+    
+    # Prevent hallucinations by forcing a hard stop if the model tries to simulate the next turn
+    import re
+    reply = re.split(r'(?:\n+|^)#*\s*(?:Instruction|System|User|Response):', reply, flags=re.IGNORECASE)[0].strip()
+
     return reply if reply else "I'm unable to generate a response at this time."
 
 

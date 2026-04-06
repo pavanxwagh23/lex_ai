@@ -568,7 +568,7 @@ async def chat_endpoint(request: ChatRequest):
     session["messages"].append({"role": "user", "content": request.message})
 
     try:
-        async with _httpx.AsyncClient(timeout=120.0) as client:
+        async with _httpx.AsyncClient(timeout=None) as client:
             llm_resp = await client.post(
                 f"{LOCAL_LLM_URL}/chat/completions",
                 json={
