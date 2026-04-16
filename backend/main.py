@@ -30,9 +30,12 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from pathlib import Path as _Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.api.routes_analysis import router as analysis_router
 from backend.api.routes_compare import router as compare_router
@@ -136,6 +139,17 @@ app.include_router(upload_router)
 app.include_router(analysis_router)
 app.include_router(tasks_router)
 app.include_router(chat_router)
+
+# ---------------------------------------------------------------------------
+# Serve the premium HTML/CSS/JS frontend
+# ---------------------------------------------------------------------------
+_FRONTEND_DIR = _Path(__file__).resolve().parent.parent / "frontend"
+
+if _FRONTEND_DIR.exists():
+    app.mount("/app", StaticFiles(directory=_FRONTEND_DIR, html=True), name="frontend")
+    logger.info("Frontend served at http://localhost:8000/app")
+else:
+    logger.warning("Frontend directory not found: %s", _FRONTEND_DIR)
 
 
 # ---------------------------------------------------------------------------

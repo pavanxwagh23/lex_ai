@@ -25,12 +25,19 @@ Polling pattern (client-side)
 
 from __future__ import annotations
 
-from celery.result import AsyncResult
+try:
+    from celery.result import AsyncResult
+    from backend.worker.celery_app import celery_app
+    _CELERY_AVAILABLE = True
+except Exception:  # noqa: BLE001
+    _CELERY_AVAILABLE = False
+    celery_app = None
+    AsyncResult = None
+
 from fastapi import APIRouter, HTTPException, status
 
 from backend.schemas.task_schema import TaskStatus, TaskStatusResponse
 from backend.utils.logger import get_logger
-from backend.worker.celery_app import celery_app
 
 logger = get_logger(__name__)
 

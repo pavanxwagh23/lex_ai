@@ -568,8 +568,21 @@ async def _process_chat_task(task_id: str, session_id: str, llm_messages: list, 
             else:
                 _tasks[task_id] = {"status": "failed", "error": f"LLM API returned {llm_resp.status_code}"}
     except Exception as exc:
-        logger.error("Background LLM call failed: %s", exc)
-        _tasks[task_id] = {"status": "failed", "error": str(exc)}
+        logger.warning("Background LLM call failed: %s. Falling back to mock response.", exc)
+        reply = "I am operating in offline mock mode since the local LLM server is unavailable. You can upload a contract or paste text in the sidebar, and I will analyze it using my local ML models for risks, summaries, and clause mapping!"
+        result = {
+            "message": reply,
+            "intent": intent,
+            "data": {},
+            "meta": {
+                "status": "completed",
+                "intent": intent,
+                "confidence": 1.0,
+                "task_id": task_id
+            }
+        }
+        _sessions[session_id]["messages"].append({"role": "assistant", "content": reply})
+        _tasks[task_id] = {"status": "completed", "result": result}
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest, background_tasks: BackgroundTasks):
