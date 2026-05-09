@@ -46,6 +46,7 @@ from backend.config import (
     API_DESCRIPTION,
     API_TITLE,
     API_VERSION,
+    CORS_ALLOWED_ORIGINS,
     LOG_LEVEL,
     STORAGE_DIR,
 )
@@ -85,7 +86,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     ensure_storage_dir()
     logger.info("Storage directory: %s", STORAGE_DIR)
-    logger.info("API ready. Docs → http://localhost:8000/docs")
+    logger.info("API ready. Docs: http://localhost:8000/docs")
 
     yield  # application runs here
 
@@ -115,7 +116,7 @@ app.add_exception_handler(AppError, app_error_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # Restrict in production
+    allow_origins=CORS_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

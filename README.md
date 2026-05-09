@@ -78,11 +78,20 @@ lex_ai/
 ### 2. Install Dependencies
 
 ```bash
-pip install streamlit fastapi "uvicorn[standard]" requests pydantic \
-            transformers torch sentencepiece \
-            spacy PyMuPDF pytesseract Pillow \
-            sentence-transformers faiss-cpu \
-            datasets scikit-learn pandas accelerate
+pip install -r requirements.txt
+```
+
+For the full ML/OCR feature set, install the optional ML profile too:
+
+```bash
+pip install -r requirements.txt -r requirements-ml.txt
+```
+
+For development and tests:
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+pytest
 ```
 
 Install the spaCy English model:
@@ -91,15 +100,17 @@ Install the spaCy English model:
 python -m spacy download en_core_web_sm
 ```
 
-> **Note:** `faiss-cpu` and `sentence-transformers` are only required for the contract comparison feature. `pytesseract` requires [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) to be installed on your system for scanned PDF support.
+> **Note:** `faiss-cpu` and `sentence-transformers` are only required for the contract comparison feature. `pytesseract` requires the separate [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) system executable for scanned PDF support. If it is not on `PATH`, set `TESSERACT_CMD` in `.env`.
 
 ### 3. Run the API Server
 
 ```bash
-python api.py
+uvicorn backend.main:app --reload --port 8000
 ```
 
 The FastAPI server starts at `http://localhost:8000`. Visit `http://localhost:8000/docs` for the interactive Swagger UI.
+
+`api.py` is kept for the older Streamlit demo endpoints, but `backend.main:app` is the recommended backend entry point for the current frontend.
 
 ### 4. Run the Streamlit Frontend
 
@@ -235,6 +246,15 @@ Key settings in `backend/config.py` and `ai_engine/clause_classifier/config.py`:
 | `EPOCHS` | (see config.py) | Training epochs |
 | `BATCH_SIZE` | (see config.py) | Training batch size |
 | `hybrid_threshold` | `0.75` | Rule confidence threshold before ML fallback |
+
+### Runtime Safety Flags
+
+| Variable | Default | Description |
+|---|---|---|
+| `APP_ENV` | `development` | Set to `production` for deployed environments |
+| `USE_REAL_AI` | `true` | Attempts to use the real extraction/classification/risk engines |
+| `ALLOW_MOCK_AI` | `true` outside production | Allows labelled demo responses when optional ML dependencies are missing |
+| `CORS_ALLOWED_ORIGINS` | `*` | Comma-separated frontend origins; restrict this in production |
 
 ---
 

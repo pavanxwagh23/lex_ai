@@ -37,6 +37,8 @@ MANIFEST
 
 # Testing
 .pytest_cache/
+.pytest_tmp*/
+pytest-cache-files-*/
 .coverage
 htmlcov/
 
@@ -53,3 +55,11 @@ Thumbs.db
 
 # Classification report
 models/sklearn_clause_classifier/report.txt
+
+# Runtime uploads and generated storage
+storage/
+logs/
+
+# Large model/checkpoint artifacts should live in Git LFS or external storage.
+models/*
+!models/.gitkeep

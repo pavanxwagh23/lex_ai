@@ -47,12 +47,36 @@ API_DESCRIPTION: str = (
 API_VERSION: str = "1.0.0"
 
 # ---------------------------------------------------------------------------
+# Runtime environment
+# ---------------------------------------------------------------------------
+
+APP_ENV: str = os.getenv("APP_ENV", "development").lower()
+
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+# ---------------------------------------------------------------------------
 # AI pipeline feature flags
 # ---------------------------------------------------------------------------
 
 #: If True, the ai_pipeline module attempts to use the real AI engines.
 #: If False (or engines unavailable), mock responses are returned.
 USE_REAL_AI: bool = os.getenv("USE_REAL_AI", "true").lower() == "true"
+
+#: Allows clearly labelled mock AI responses when optional ML dependencies are
+#: missing. Defaults to true for local demos and false in production.
+ALLOW_MOCK_AI: bool = _env_bool("ALLOW_MOCK_AI", APP_ENV != "production")
+
+#: Comma-separated list of allowed frontend origins. Keep permissive defaults
+#: for local development, but set this explicitly in production.
+CORS_ALLOWED_ORIGINS: list[str] = [
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "*").split(",")
+    if origin.strip()
+]
 
 #: Similarity thresholds for ContractComparator  (cosine, range [0,1])
 COMPARE_THRESHOLD_IDENTICAL: float = 0.90

@@ -1,0 +1,17 @@
+# Optional heavy dependencies for OCR, model training, summarization, and semantic comparison.
+# Install with:
+#   pip install -r requirements.txt -r requirements-ml.txt
+
+accelerate
+datasets
+faiss-cpu
+PyMuPDF
+pytesseract
+Pillow
+scikit-learn
+sentence-transformers
+sentencepiece
+spacy
+torch
+transformers
+pandas

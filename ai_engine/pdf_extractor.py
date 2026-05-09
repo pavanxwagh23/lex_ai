@@ -6,6 +6,7 @@ Supports both digital PDFs and scanned documents with OCR.
 """
 
 import logging
+import os
 import re
 from pathlib import Path
 from typing import Dict, List, Union
@@ -24,6 +25,8 @@ except ImportError:
 try:
     import pytesseract
     from PIL import Image
+    if os.getenv("TESSERACT_CMD"):
+        pytesseract.pytesseract.tesseract_cmd = os.environ["TESSERACT_CMD"]
     _TESSERACT_AVAILABLE = True
 except ImportError:
     _TESSERACT_AVAILABLE = False
@@ -39,6 +42,57 @@ logger = logging.getLogger(__name__)
 class PDFExtractionError(Exception):
     """Custom exception for PDF extraction errors."""
     pass
+
+
+DocumentExtractionError = PDFExtractionError
+
+
+def extract_text_from_docx(docx_path: Union[str, Path]) -> str:
+    """
+    Extract text from a DOCX file using python-docx.
+
+    Args:
+        docx_path: Path to the DOCX file
+
+    Returns:
+        Extracted raw text as string
+
+    Raises:
+        PDFExtractionError: If extraction fails
+    """
+    try:
+        from docx import Document
+    except ImportError as exc:
+        raise PDFExtractionError(
+            "python-docx is required for DOCX extraction. "
+            "Install with: pip install python-docx"
+        ) from exc
+
+    try:
+        docx_path = Path(docx_path)
+        if not docx_path.exists():
+            raise PDFExtractionError(f"DOCX file not found: {docx_path}")
+
+        document = Document(str(docx_path))
+        text_content = []
+
+        for paragraph in document.paragraphs:
+            if paragraph.text and paragraph.text.strip():
+                text_content.append(paragraph.text)
+
+        for table in document.tables:
+            for row in table.rows:
+                cells = [cell.text.strip() for cell in row.cells if cell.text.strip()]
+                if cells:
+                    text_content.append(" | ".join(cells))
+
+        return "\n\n".join(text_content)
+
+    except PDFExtractionError:
+        raise
+    except Exception as e:
+        logger.error(f"Error extracting text from DOCX: {e}")
+        raise PDFExtractionError(f"Failed to extract text from DOCX: {e}")
 
 
 def extract_text_from_pdf(pdf_path: Union[str, Path]) -> str:
@@ -293,6 +347,46 @@ def _get_page_count(pdf_path: Union[str, Path]) -> int:
         return 0
 
 
+def _process_docx(docx_path: Union[str, Path]) -> Dict[str, Union[str, List[str], int]]:
+    """
+    Process a DOCX document and return the same shape as PDF processing.
+    """
+    try:
+        docx_path = Path(docx_path)
+        logger.info(f"Processing DOCX document: {docx_path}")
+
+        if not docx_path.exists():
+            raise PDFExtractionError(f"File not found: {docx_path}")
+
+        if docx_path.suffix.lower() != ".docx":
+            raise PDFExtractionError(f"Invalid file type: {docx_path.suffix}. Expected .docx")
+
+        raw_text = extract_text_from_docx(docx_path)
+        cleaned_text = clean_text(raw_text)
+        paragraphs = split_paragraphs(cleaned_text)
+
+        result = {
+            "raw_text": raw_text,
+            "clean_text": cleaned_text,
+            "paragraphs": paragraphs,
+            "num_pages": 0,
+            "source_type": "docx"
+        }
+
+        logger.info(
+            f"Successfully processed DOCX: {len(paragraphs)} paragraphs, "
+            f"{len(cleaned_text)} characters"
+        )
+
+        return result
+
+    except PDFExtractionError:
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error processing DOCX: {e}")
+        raise PDFExtractionError(f"Failed to process DOCX: {e}")
+
+
 def process_document(pdf_path: Union[str, Path]) -> Dict[str, Union[str, List[str], int]]:
     """
     Main function to process a PDF document and extract structured data.
@@ -313,14 +407,17 @@ def process_document(pdf_path: Union[str, Path]) -> Dict[str, Union[str, List[st
     """
     try:
         pdf_path = Path(pdf_path)
-        logger.info(f"Processing PDF document: {pdf_path}")
+        logger.info(f"Processing document: {pdf_path}")
         
         # Validate file
         if not pdf_path.exists():
             raise PDFExtractionError(f"File not found: {pdf_path}")
         
+        if pdf_path.suffix.lower() == ".docx":
+            return _process_docx(pdf_path)
+
         if pdf_path.suffix.lower() != '.pdf':
-            raise PDFExtractionError(f"Invalid file type: {pdf_path.suffix}. Expected .pdf")
+            raise PDFExtractionError(f"Invalid file type: {pdf_path.suffix}. Expected .pdf or .docx")
         
         # Get page count
         num_pages = _get_page_count(pdf_path)

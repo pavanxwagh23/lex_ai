@@ -2,8 +2,11 @@ fastapi
 uvicorn[standard]
 streamlit
 requests
-pydantic
+pydantic>=2
 python-multipart
 pdfplumber
+python-docx
 openai
 python-dotenv
+redis
+celery

@@ -15,7 +15,8 @@ backend can be tested end-to-end without the full ML stack.
 
 Environment control
 -------------------
-Set ``USE_REAL_AI=false`` to force mock mode regardless of what is installed.
+Set ``USE_REAL_AI=false`` to force mock mode in local development. In
+production, set ``ALLOW_MOCK_AI=false`` so missing engines fail loudly.
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from backend.config import (
+    ALLOW_MOCK_AI,
     COMPARE_THRESHOLD_IDENTICAL,
     COMPARE_THRESHOLD_MODIFIED,
     COMPARE_THRESHOLD_RELATED,
@@ -39,6 +41,13 @@ logger = get_logger(__name__)
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+# Some legacy ai_engine modules still use absolute sibling imports such as
+# ``from clause_detector import ...``. Keep the engine directory importable
+# until those modules are converted to package-relative imports.
+AI_ENGINE_DIR = PROJECT_ROOT / "ai_engine"
+if str(AI_ENGINE_DIR) not in sys.path:
+    sys.path.insert(0, str(AI_ENGINE_DIR))
+
 
 # ---------------------------------------------------------------------------
 # Module-level lazy singletons  (initialised on first call)
@@ -46,6 +55,24 @@ if str(PROJECT_ROOT) not in sys.path:
 _risk_engine    = None
 _summarizer     = None
 _comparator     = None
+
+
+def _fallback_or_raise(feature: str, exc: Exception | None, mock_factory):
+    """Return a labelled mock response in demo mode, otherwise fail loudly."""
+    if ALLOW_MOCK_AI:
+        if exc is None:
+            logger.debug("Mock mode: %s", feature)
+        else:
+            logger.warning("%s failed (%s), using mock because ALLOW_MOCK_AI=true.", feature, exc)
+        return mock_factory()
+
+    message = (
+        f"{feature} is unavailable and mock AI fallback is disabled. "
+        "Install optional ML dependencies or set ALLOW_MOCK_AI=true for local demos."
+    )
+    if exc is None:
+        raise RuntimeError(message)
+    raise RuntimeError(message) from exc
 
 
 def _get_risk_engine():
@@ -98,18 +125,16 @@ def extract_text(file_path: str | Path) -> str:
         Extracted plain text.
     """
     if not USE_REAL_AI:
-        logger.debug("Mock: extract_text(%s)", file_path)
-        return _mock_contract_text()
+        return _fallback_or_raise("extract_text", None, _mock_contract_text)
 
     try:
-        from ai_engine.pdf_extractor import process_pdf
-        result = process_pdf(str(file_path))
-        text: str = result.get("full_text", "")
+        from ai_engine.pdf_extractor import process_document
+        result = process_document(str(file_path))
+        text: str = result.get("clean_text", "") or result.get("raw_text", "")
         logger.info("Extracted %d characters from %s", len(text), file_path)
         return text
     except Exception as exc:  # noqa: BLE001
-        logger.warning("extract_text failed (%s), using mock.", exc)
-        return _mock_contract_text()
+        return _fallback_or_raise("extract_text", exc, _mock_contract_text)
 
 
 # ===========================================================================
@@ -132,12 +157,16 @@ def detect_clauses(text: str) -> dict[str, str]:
         e.g. ``{"termination": "Either party may terminate …"}``.
     """
     if not USE_REAL_AI:
-        return _mock_clauses()
+        return _fallback_or_raise("detect_clauses", None, _mock_clauses)
 
     try:
         from ai_engine.paragraph_splitter import split_into_paragraphs
         from ai_engine.clause_detector_pro import detect_clause_enhanced
-        from ai_engine.clause_classifier.predict import predict_clause
+        from ai_engine.clause_classifier.config import MODEL_SAVE_DIR
+
+        predict_clause = None
+        if (MODEL_SAVE_DIR / "config.json").exists():
+            from ai_engine.clause_classifier.predict import predict_clause
 
         paragraphs  = split_into_paragraphs(text)
         clause_map: dict[str, str] = {}
@@ -145,18 +174,23 @@ def detect_clauses(text: str) -> dict[str, str]:
         for para in paragraphs:
             if not para.strip():
                 continue
-            result = predict_clause(para)
-            label  = result.get("clause_type", "other")
+            if predict_clause is not None:
+                result = predict_clause(para)
+                label = result.get("clause_type", "other")
+            else:
+                result = detect_clause_enhanced(para, use_preprocessing=True)
+                label = result.get("label", "other")
             # Keep the first (typically best) representative for each type
             if label != "other" and label not in clause_map:
                 clause_map[label] = para
 
         logger.info("Detected %d clause types.", len(clause_map))
-        return clause_map or _mock_clauses()
+        if clause_map:
+            return clause_map
+        return _fallback_or_raise("detect_clauses", None, _mock_clauses)
 
     except Exception as exc:  # noqa: BLE001
-        logger.warning("detect_clauses failed (%s), using mock.", exc)
-        return _mock_clauses()
+        return _fallback_or_raise("detect_clauses", exc, _mock_clauses)
 
 
 # ===========================================================================
@@ -179,7 +213,7 @@ def detect_risks(text: str) -> dict[str, Any]:
         ``risk_summary`` (list[str]).
     """
     if not USE_REAL_AI:
-        return _mock_risks()
+        return _fallback_or_raise("detect_risks", None, _mock_risks)
 
     try:
         from ai_engine.paragraph_splitter import split_into_paragraphs
@@ -208,8 +242,7 @@ def detect_risks(text: str) -> dict[str, Any]:
         }
 
     except Exception as exc:  # noqa: BLE001
-        logger.warning("detect_risks failed (%s), using mock.", exc)
-        return _mock_risks()
+        return _fallback_or_raise("detect_risks", exc, _mock_risks)
 
 
 # ===========================================================================
@@ -231,7 +264,7 @@ def generate_summary(text: str) -> dict[str, Any]:
         Keys: ``summary`` (list[str]), ``full_summary`` (str).
     """
     if not USE_REAL_AI:
-        return _mock_summary()
+        return _fallback_or_raise("generate_summary", None, _mock_summary)
 
     try:
         summarizer = _get_summarizer()
@@ -247,8 +280,7 @@ def generate_summary(text: str) -> dict[str, Any]:
         }
 
     except Exception as exc:  # noqa: BLE001
-        logger.warning("generate_summary failed (%s), using mock.", exc)
-        return _mock_summary()
+        return _fallback_or_raise("generate_summary", exc, _mock_summary)
 
 
 # ===========================================================================
@@ -273,7 +305,7 @@ def compare_contracts(text_a: str, text_b: str) -> dict[str, Any]:
         ``similar_clauses``, ``metadata``.
     """
     if not USE_REAL_AI:
-        return _mock_comparison()
+        return _fallback_or_raise("compare_contracts", None, _mock_comparison)
 
     try:
         from ai_engine.paragraph_splitter import split_into_paragraphs
@@ -295,8 +327,7 @@ def compare_contracts(text_a: str, text_b: str) -> dict[str, Any]:
         }
 
     except Exception as exc:  # noqa: BLE001
-        logger.warning("compare_contracts failed (%s), using mock.", exc)
-        return _mock_comparison()
+        return _fallback_or_raise("compare_contracts", exc, _mock_comparison)
 
 
 # ===========================================================================
