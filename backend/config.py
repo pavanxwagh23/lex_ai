@@ -66,6 +66,13 @@ def _env_bool(name: str, default: bool) -> bool:
 #: If False (or engines unavailable), mock responses are returned.
 USE_REAL_AI: bool = os.getenv("USE_REAL_AI", "true").lower() == "true"
 
+#: Optional conversational LLM provider. Keep ``rule`` as the default until
+#: the fine-tuned local model passes dataset and behavior evaluation.
+LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "rule").lower()
+LOCAL_LLM_URL: str = os.getenv("LOCAL_LLM_URL", "http://localhost:11435/v1").rstrip("/")
+LOCAL_LLM_MODEL: str = os.getenv("LOCAL_LLM_MODEL", "lex-ai-legal")
+LLM_TIMEOUT_SECONDS: float = float(os.getenv("LLM_TIMEOUT_SECONDS", "30"))
+
 #: Allows clearly labelled mock AI responses when optional ML dependencies are
 #: missing. Defaults to true for local demos and false in production.
 ALLOW_MOCK_AI: bool = _env_bool("ALLOW_MOCK_AI", APP_ENV != "production")

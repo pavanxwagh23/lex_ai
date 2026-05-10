@@ -16,6 +16,9 @@ import os
 import re
 from typing import Optional
 
+import requests
+
+from backend.config import LLM_PROVIDER, LLM_TIMEOUT_SECONDS, LOCAL_LLM_MODEL, LOCAL_LLM_URL
 from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -168,15 +171,59 @@ class RuleBasedResponder:
 _responder: Optional[RuleBasedResponder] = None
 
 
-class LLMClient:
-    """Drop-in compatible wrapper around the RuleBasedResponder."""
+class LocalHTTPResponder:
+    """OpenAI-compatible local model server responder."""
 
-    def __init__(self, api_key=None, model=None):
-        self._responder = RuleBasedResponder()
-        logger.info("LLMClient initialised in ZERO-LLM mode (RuleBasedResponder).")
+    def __init__(
+        self,
+        base_url: str = LOCAL_LLM_URL,
+        model: str = LOCAL_LLM_MODEL,
+        timeout: float = LLM_TIMEOUT_SECONDS,
+    ):
+        self.base_url = base_url.rstrip("/")
+        self.model = model
+        self.timeout = timeout
 
     def generate(self, prompt: str, system_prompt: Optional[str] = None) -> str:
-        return self._responder.generate(prompt, system_prompt)
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": prompt})
+
+        response = requests.post(
+            f"{self.base_url}/chat/completions",
+            json={
+                "model": self.model,
+                "messages": messages,
+                "max_tokens": 256,
+                "temperature": 0.3,
+            },
+            timeout=self.timeout,
+        )
+        response.raise_for_status()
+        data = response.json()
+        return data["choices"][0]["message"]["content"].strip()
+
+
+class LLMClient:
+    """Drop-in compatible wrapper around the configured responder."""
+
+    def __init__(self, api_key=None, model=None):
+        if LLM_PROVIDER == "local_http":
+            self._responder = LocalHTTPResponder()
+            logger.info("LLMClient initialised with local_http provider at %s.", LOCAL_LLM_URL)
+        else:
+            self._responder = RuleBasedResponder()
+            logger.info("LLMClient initialised with rule provider.")
+
+    def generate(self, prompt: str, system_prompt: Optional[str] = None) -> str:
+        try:
+            return self._responder.generate(prompt, system_prompt)
+        except Exception as exc:  # noqa: BLE001
+            if isinstance(self._responder, RuleBasedResponder):
+                raise
+            logger.warning("Configured LLM provider failed (%s); falling back to rule responder.", exc)
+            return RuleBasedResponder().generate(prompt, system_prompt)
 
 
 def get_llm_client() -> LLMClient:

@@ -1,6 +1,6 @@
 # ⚖️ Lex AI — Legal Document Analyzer
 
-An end-to-end AI-powered platform for analyzing legal contracts. Lex AI automatically detects clause types, flags legal risks, extracts text from PDFs (including scanned documents via OCR), compares contract versions semantically, and summarizes documents — all through an intuitive Streamlit UI backed by a FastAPI service.
+An end-to-end AI-powered platform for analyzing legal contracts. Lex AI automatically detects clause types, flags legal risks, extracts text from PDFs and DOCX files, compares contract versions semantically, and summarizes documents through a browser SaaS dashboard backed by a modular FastAPI service.
 
 ---
 
@@ -24,8 +24,8 @@ An end-to-end AI-powered platform for analyzing legal contracts. Lex AI automati
 ```
 lex_ai/
 │
-├── app.py                        # Streamlit frontend UI
-├── api.py                        # FastAPI server (main entry point)
+├── app.py                        # Deprecated Streamlit prototype UI
+├── api.py                        # Deprecated single-file FastAPI prototype
 │
 ├── ai_engine/                    # Core AI/NLP engine
 │   ├── clause_detector.py        # Base rule-based clause detector
@@ -110,30 +110,44 @@ uvicorn backend.main:app --reload --port 8000
 
 The FastAPI server starts at `http://localhost:8000`. Visit `http://localhost:8000/docs` for the interactive Swagger UI.
 
-`api.py` is kept for the older Streamlit demo endpoints, but `backend.main:app` is the recommended backend entry point for the current frontend.
+`backend.main:app` is the supported backend entry point. `api.py` is deprecated and kept only as a migration reference.
 
-### 4. Run the Streamlit Frontend
+### 4. Open the SaaS Dashboard
 
-In a **separate terminal**:
+The modular backend serves the browser frontend directly:
+
+`http://localhost:8000/app`
+
+The old Streamlit prototype in `app.py` is deprecated. Do not add new product features there.
+
+### 5. Run Celery Workers for Heavy AI Jobs
+
+Analysis, summary, and comparison routes enqueue Celery tasks. For those routes,
+start Redis and then run a worker in a separate terminal:
 
 ```bash
-streamlit run app.py
+celery -A backend.worker.celery_app worker --loglevel=info
 ```
-
-Open `http://localhost:8501` in your browser.
 
 ---
 
-## 🔌 API Endpoints
+## 🔌 Modular API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/` | Health check |
-| `POST` | `/analyze_text` | Analyze raw pasted contract text |
-| `POST` | `/analyze_pdf` | Upload and analyze a PDF contract |
-| `POST` | `/classify_clause` | Classify a single paragraph using Legal-BERT |
-| `POST` | `/classify_clauses` | Batch classify multiple paragraphs |
-| `POST` | `/compare_contracts` | Semantically compare two contract clause lists |
+| `GET` | `/health` | Health probe |
+| `POST` | `/contracts/upload` | Upload a PDF or DOCX contract |
+| `GET` | `/contracts` | List uploaded contracts in the current registry |
+| `POST` | `/contracts/{contract_id}/analyze` | Enqueue full analysis task |
+| `POST` | `/contracts/{contract_id}/summary` | Enqueue summary task |
+| `POST` | `/contracts/compare` | Enqueue semantic comparison task |
+| `GET` | `/tasks/{task_id}` | Poll task status/result |
+| `POST` | `/chat` | Chat interface used by the SaaS dashboard |
+
+Legacy endpoints in `api.py` such as `/analyze_text`, `/analyze_pdf`, and
+`/classify_clause` are deprecated. Migrate any missing behavior into `backend/`
+instead of extending `api.py`.
 
 ### Example: Analyze Text
 
@@ -254,7 +268,14 @@ Key settings in `backend/config.py` and `ai_engine/clause_classifier/config.py`:
 | `APP_ENV` | `development` | Set to `production` for deployed environments |
 | `USE_REAL_AI` | `true` | Attempts to use the real extraction/classification/risk engines |
 | `ALLOW_MOCK_AI` | `true` outside production | Allows labelled demo responses when optional ML dependencies are missing |
+| `LLM_PROVIDER` | `rule` | Conversational provider: `rule` or `local_http` |
+| `LOCAL_LLM_URL` | `http://localhost:11435/v1` | OpenAI-compatible local LLM server URL |
+| `LOCAL_LLM_MODEL` | `lex-ai-legal` | Local fine-tuned model id |
 | `CORS_ALLOWED_ORIGINS` | `*` | Comma-separated frontend origins; restrict this in production |
+
+The local fine-tuned LLM is experimental. Run
+`python fine_tuning/validate_dataset.py` before retraining, and keep
+`LLM_PROVIDER=rule` until the dataset and behavior tests are clean.
 
 ---
 

@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, sys
+import json, os, sys
 from pathlib import Path
 
 PROJECT_ROOT  = Path(__file__).resolve().parent.parent
@@ -19,6 +19,7 @@ MAX_SAMPLES   = 10000   # Use 10K of 27K samples: mathematically guarantees <8 h
 LORA_RANK     = 8       # Reduced 16→8: ~10% faster backward pass
 LORA_ALPHA    = 16      # Keep 2× LoRA rank ratio
 GRAD_CKPT     = False   # Disabled: Trade the empty 2.5GB VRAM for raw speed!
+ALLOW_DIRTY_DATASET = os.getenv("ALLOW_DIRTY_FINETUNE", "false").lower() in {"1", "true", "yes", "on"}
 
 
 
@@ -94,6 +95,19 @@ def finetune():
 
     if not check_deps():
         sys.exit(1)
+
+    from fine_tuning.validate_dataset import validate_dataset
+
+    issues = validate_dataset(DATASET_PATH)
+    if issues and not ALLOW_DIRTY_DATASET:
+        print("\nDataset validation failed: " + str(len(issues)) + " issue(s) found.")
+        print("Fix the dataset before training, or set ALLOW_DIRTY_FINETUNE=true to override.")
+        print("First issues:")
+        for issue in issues[:20]:
+            print(f"  line {issue.line}: {issue.code}: {issue.message}")
+        sys.exit(1)
+    if issues:
+        print("\nWARNING: training with " + str(len(issues)) + " dataset validation issue(s).")
 
     from transformers import BitsAndBytesConfig
     from peft import prepare_model_for_kbit_training

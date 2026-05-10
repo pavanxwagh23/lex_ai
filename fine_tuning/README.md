@@ -9,8 +9,9 @@ This directory contains everything needed to create and serve **your own custom 
 ```
 fine_tuning/
 ├── generate_dataset.py   # Step 1: Generate legal Q&A training data
-├── finetune.py           # Step 2: Fine-tune phi-2 on your legal data
-├── serve.py              # Step 3: Serve your model as an OpenAI-compatible API
+├── validate_dataset.py   # Step 2: Check dataset quality before training
+├── finetune.py           # Step 3: Fine-tune Phi-3 Mini on your legal data
+├── serve.py              # Step 4: Serve your model as an OpenAI-compatible API
 └── data/
     └── legal_qa_dataset.jsonl   # Auto-generated training data
 ```
@@ -34,6 +35,31 @@ python fine_tuning/generate_dataset.py
 This produces 54+ labeled legal Q&A pairs in `fine_tuning/data/legal_qa_dataset.jsonl`.
 
 ### Step 2: Fine-Tune the Model
+
+Before training, validate the dataset:
+
+```bash
+python fine_tuning/validate_dataset.py
+```
+
+Use strict mode in CI or before a final training run:
+
+```bash
+python fine_tuning/validate_dataset.py --strict
+```
+
+If the validator reports duplicate prompts, law mismatches, or suspicious
+scenario/law pairings, fix or remove those rows before training. Fine-tuning on
+incorrect legal pairings will make the model less reliable.
+
+`finetune.py` refuses to train on a dirty dataset by default. Override only for
+experiments:
+
+```bash
+set ALLOW_DIRTY_FINETUNE=true
+python fine_tuning/finetune.py
+```
+
 ```bash
 python fine_tuning/finetune.py
 ```
@@ -56,7 +82,7 @@ Your model will start serving on `http://localhost:11435/v1` using an OpenAI-com
 ### Step 4: Connect Lex AI to Your Model
 Update your `.env` file:
 ```env
-USE_LOCAL_LLM=true
+LLM_PROVIDER=local_http
 LOCAL_LLM_URL=http://localhost:11435/v1
 LOCAL_LLM_MODEL=lex-ai-legal
 ```
@@ -70,11 +96,19 @@ python -m uvicorn backend.main:app --env-file .env --port 8000
 ## How It Works
 
 The fine-tuning process uses **LoRA (Low-Rank Adaptation)** — an extremely efficient technique that:
-- Freezes the original `phi-2` model weights (no expensive full retraining).
+- Freezes the original `microsoft/Phi-3-mini-4k-instruct` model weights (no expensive full retraining).
 - Trains only a tiny set of "adapter" layers (0.1% of total parameters).
 - Merges the adapters back onto the base model after training.
 
 The result is a model that has **your legal knowledge built in** but required only a fraction of the compute of training from scratch.
+
+## Current Model Status
+
+Treat `models/lex_ai_custom_llm/` as an experimental local assistant until it
+passes dataset validation and behavior evaluation. The current dataset contains
+generated examples and may include mismatched facts/laws. Keep
+`LLM_PROVIDER=rule` as the default for the main backend, and enable
+`LLM_PROVIDER=local_http` only when intentionally testing the local model.
 
 ---
 

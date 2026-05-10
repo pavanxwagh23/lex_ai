@@ -15,3 +15,5 @@ spacy
 torch
 transformers
 pandas
+peft
+bitsandbytes

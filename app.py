@@ -1,3 +1,10 @@
+"""
+Deprecated Streamlit prototype UI.
+
+The supported frontend is the static SaaS dashboard in ``frontend/``, served by
+the modular backend at ``http://localhost:8000/app``.
+"""
+
 import uuid
 import time
 import requests

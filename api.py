@@ -1,3 +1,11 @@
+"""
+Deprecated legacy FastAPI entry point.
+
+Use ``uvicorn backend.main:app --reload --port 8000`` for the supported
+modular backend. Keep this file only as a migration reference for old demo
+endpoints that have not yet been moved.
+"""
+
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
@@ -640,4 +648,7 @@ async def get_chat_result(task_id: str):
 
 
 if __name__ == "__main__":
+    logger.warning(
+        "api.py is deprecated. Use: uvicorn backend.main:app --reload --port 8000"
+    )
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
