@@ -207,7 +207,7 @@ async function sendMessage() {
       if (status === 'processing' && meta.task_id) {
         await pollTask(meta.task_id, intent, meta);
       } else {
-        const reply = data.message || 'Done.';
+        const reply = buildDisplayMessage(data, intent);
         appendMessage('assistant', reply, intent, meta);
       }
     }
@@ -236,7 +236,7 @@ async function pollTask(taskId, intent, originalMeta) {
         removeTyping(typingId);
         const res  = data.result || data;
         const meta = { ...originalMeta, ...(res.meta || {}), status: 'completed', task_id: taskId };
-        appendMessage('assistant', res.message || 'Analysis complete.', intent, meta);
+        appendMessage('assistant', buildDisplayMessage(res, intent), intent, meta);
         return;
       }
       if (data.status === 'failed') {
@@ -251,6 +251,73 @@ async function pollTask(taskId, intent, originalMeta) {
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function buildDisplayMessage(result, intent = '') {
+  const data = result?.data || {};
+  const baseText = result?.message || result?.response || '';
+
+  if (intent === 'SUMMARY' || data.summary || data.key_points || data.explanation) {
+    const lines = [];
+    if (typeof data.summary === 'string' && data.summary.trim()) {
+      lines.push(data.summary.trim());
+    }
+
+    if (Array.isArray(data.key_points) && data.key_points.length > 0) {
+      lines.push('');
+      lines.push('**Key points**');
+      for (const point of data.key_points) {
+        lines.push(`- ${point}`);
+      }
+    }
+
+    if (typeof data.explanation === 'string' && data.explanation.trim()) {
+      lines.push('');
+      lines.push('**Plain-English explanation**');
+      lines.push(data.explanation.trim());
+    }
+
+    if (lines.length > 0) {
+      return lines.join('\n');
+    }
+  }
+
+  if (intent === 'CLAUSE_MAP' || data.clause_groups || data.unique_clause_types !== undefined) {
+    const lines = [];
+
+    if (baseText) {
+      lines.push(baseText.trim());
+      lines.push('');
+    }
+
+    const total = Number.isFinite(data.total_paragraphs) ? data.total_paragraphs : 0;
+    const unique = Number.isFinite(data.unique_clause_types) ? data.unique_clause_types : 0;
+    lines.push(`**Coverage:** ${unique} clause types across ${total} paragraphs.`);
+
+    const groups = data.clause_groups && typeof data.clause_groups === 'object' ? data.clause_groups : {};
+    const entries = Object.entries(groups);
+
+    if (entries.length > 0) {
+      lines.push('');
+      lines.push('**Clause groups**');
+      for (const [, group] of entries.slice(0, 10)) {
+        const label = group?.label || 'Unknown';
+        const count = group?.count ?? 0;
+        const avg = typeof group?.avg_confidence === 'number' ? group.avg_confidence : null;
+        const avgText = avg !== null ? ` (avg conf ${Math.round(avg * 100)}%)` : '';
+        lines.push(`- ${label}: ${count}${avgText}`);
+      }
+    }
+
+    if (data.error) {
+      lines.push('');
+      lines.push(`⚠️ ${data.error}`);
+    }
+
+    return lines.join('\n');
+  }
+
+  return baseText || 'Analysis complete.';
+}
 
 function appendMessage(role, text, intent, meta) {
   const container = document.getElementById('chatMessages');
@@ -332,7 +399,7 @@ function clearChat() {
     <div class="welcome-screen">
       <div class="welcome-icon">⚖️</div>
       <h2>Welcome to Lex AI</h2>
-      <p>Your intelligent legal assistant. Upload a contract or paste text in the sidebar, then ask me to analyze risks, summarize key points, or map all clause types.</p>
+      <p>Your intelligent legal assistant. Upload a contract in the sidebar, then ask me to analyze risks, summarize key points, or map all clause types.</p>
       <div class="quick-actions">
         <button class="quick-btn" onclick="quickPrompt('Summarize this contract')">📄 Summarize</button>
         <button class="quick-btn" onclick="quickPrompt('Find all legal risks')">⚠️ Find Risks</button>
@@ -361,7 +428,7 @@ function markdownLite(text) {
 // ── ANALYZE TAB ───────────────────────────────────────────────────────────────
 async function runAnalysis(type) {
   if (!contextText && !contractId) {
-    showToast('Please upload a contract or paste text first', 'error');
+    showToast('Please upload a contract first', 'error');
     return;
   }
 
@@ -402,7 +469,7 @@ async function runAnalysis(type) {
       }
     }
 
-    contentDiv.innerHTML = markdownLite(result.message || 'Analysis complete.');
+    contentDiv.innerHTML = markdownLite(buildDisplayMessage(result, type === 'summary' ? 'SUMMARY' : ''));
     showToast(titleMap[type] + ' complete!', 'success');
   } catch {
     contentDiv.innerHTML = '<em style="color:var(--risk-high)">❌ Failed — check API connection</em>';
