@@ -102,7 +102,7 @@ def route_request(intent: str, message: str, payload: Dict[str, Any]) -> Dict[st
         data = map_clauses(text)
         error = data.get("error")
         if error:
-            return {"response": f"⚠️ {error}", "data": None}
+            return {"response": f"⚠️ {error}", "data": data}
         n_types = data.get("unique_clause_types", 0)
         n_paras = data.get("total_paragraphs", 0)
         return {

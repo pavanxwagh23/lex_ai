@@ -32,6 +32,11 @@ MODEL_PATH    = _PROJECT_ROOT / "models" / "sklearn_clause_classifier" / "model.
 _pipeline = None
 
 
+def sklearn_model_available() -> bool:
+    """Return True if the trained sklearn pipeline file exists on disk."""
+    return MODEL_PATH.is_file()
+
+
 def _load_model():
     """Load and cache the sklearn pipeline from disk."""
     global _pipeline
@@ -46,6 +51,7 @@ def _load_model():
                 "  python ai_engine/clause_classifier/train_sklearn.py",
                 MODEL_PATH,
             )
+            _pipeline = None
     return _pipeline
 
 

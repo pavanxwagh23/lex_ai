@@ -21,6 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
   selectTemplate('nda');
   setInterval(checkAPIStatus, 30000);
 
+  const jg = document.getElementById('judgmentsGrid');
+  if (jg) {
+    jg.addEventListener('click', (e) => {
+      const card = e.target.closest('.judgment-card');
+      const jid = card?.dataset?.jid;
+      if (jid) showJudgmentDetail(jid);
+    });
+    jg.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const card = e.target.closest('.judgment-card');
+      const jid = card?.dataset?.jid;
+      if (jid) {
+        e.preventDefault();
+        showJudgmentDetail(jid);
+      }
+    });
+  }
+
   // restore display name
   const name = localStorage.getItem('lexai_display_name');
   if (name) {
@@ -291,7 +309,12 @@ function buildDisplayMessage(result, intent = '') {
 
     const total = Number.isFinite(data.total_paragraphs) ? data.total_paragraphs : 0;
     const unique = Number.isFinite(data.unique_clause_types) ? data.unique_clause_types : 0;
-    lines.push(`**Coverage:** ${unique} clause types across ${total} paragraphs.`);
+    const src = data.classifier ? ` (${data.classifier})` : '';
+    lines.push(`**Coverage:** ${unique} clause types across ${total} paragraphs${src}.`);
+    if (data.note) {
+      lines.push('');
+      lines.push(`_${String(data.note)}_`);
+    }
 
     const groups = data.clause_groups && typeof data.clause_groups === 'object' ? data.clause_groups : {};
     const entries = Object.entries(groups);
@@ -531,37 +554,99 @@ function deleteSaved(id) {
 }
 
 // ── LANDMARK JUDGMENTS ────────────────────────────────────────────────────────
+// Curated reference cards (Indian SC / constitution / statutes + select common-law).
+// Each entry has a stable `id` for the detail modal (not keyed on title text).
 const JUDGMENTS = [
-  { icon:'🏛️', color:'#d97706', tag:'Constitutional', tagColor:'rgba(217,119,6,0.15)', tagFg:'#d97706',
-    title:'Bachan Singh v. State of Punjab', citation:'1980 SCC (2) 684',
-    summary:'Upheld death penalty as constitutional but restricted it to "rarest of rare" cases.' },
-  { icon:'📜', color:'#ef4444', tag:'Criminal Law', tagColor:'rgba(239,68,68,0.15)', tagFg:'#ef4444',
-    title:'Section 498A: Cruelty — Landmark Interpretation', citation:'Indian Penal Code, 1860',
-    summary:'Supreme Court guidelines on misuse and proper application of IPC Section 498A in matrimonial disputes.' },
-  { icon:'⚖️', color:'#3b82f6', tag:'Constitutional', tagColor:'rgba(59,130,246,0.15)', tagFg:'#60a5fa',
-    title:'Article 14: Equality Before the Law', citation:'Constitution of India, 1950',
-    summary:'Right to equality — the state shall not deny equality before law or equal protection of laws.' },
-  { icon:'🛡️', color:'#22c55e', tag:'Fundamental Rights', tagColor:'rgba(34,197,94,0.15)', tagFg:'#22c55e',
-    title:'Article 21: Protection of Life and Liberty', citation:'Constitution of India, 1950',
-    summary:'No person shall be deprived of life or personal liberty except according to procedure established by law.' },
-  { icon:'💼', color:'#a855f7', tag:'Contract Law', tagColor:'rgba(168,85,247,0.15)', tagFg:'#a855f7',
-    title:'Carlill v. Carbolic Smoke Ball Co.', citation:'[1893] 1 QB 256',
-    summary:'Seminal case on unilateral contracts — an advertisement can constitute a binding offer.' },
-  { icon:'🏗️', color:'#f59e0b', tag:'Property Law', tagColor:'rgba(245,158,11,0.15)', tagFg:'#f59e0b',
-    title:'Transfer of Property Act — Section 53A', citation:'Transfer of Property Act, 1882',
-    summary:'Part performance doctrine protects a transferee who acts on an unregistered agreement.' },
-  { icon:'🔒', color:'#06b6d4', tag:'Data & Privacy', tagColor:'rgba(6,182,212,0.15)', tagFg:'#06b6d4',
-    title:'K.S. Puttaswamy v. Union of India', citation:'(2017) 10 SCC 1',
-    summary:'Landmark 9-judge bench ruling — Right to Privacy is a fundamental right under Article 21.' },
-  { icon:'📊', color:'#ec4899', tag:'Company Law', tagColor:'rgba(236,72,153,0.15)', tagFg:'#ec4899',
-    title:'Salomon v. Salomon & Co. Ltd.', citation:'[1897] AC 22',
-    summary:'Corporate personality is distinct from its members — the veil of incorporation principle.' },
-  { icon:'🤝', color:'#14b8a6', tag:'Labour Law', tagColor:'rgba(20,184,166,0.15)', tagFg:'#14b8a6',
-    title:'Vishaka v. State of Rajasthan', citation:'(1997) 6 SCC 241',
-    summary:'Guidelines for prevention of sexual harassment at workplace — precursor to POSH Act.' },
-  { icon:'📋', color:'#8b5cf6', tag:'Tort Law', tagColor:'rgba(139,92,246,0.15)', tagFg:'#8b5cf6',
-    title:'Donoghue v. Stevenson', citation:'[1932] AC 562',
-    summary:'Established the "neighbour principle" and duty of care in modern tort law / negligence.' },
+  {
+    id: 'bachan-singh',
+    region: 'Indian Supreme Court',
+    icon: '🏛️', color: '#d97706', tag: 'Criminal / Constitutional', tagColor: 'rgba(217,119,6,0.15)', tagFg: '#d97706',
+    title: 'Bachan Singh v. State of Punjab',
+    citation: '1980 SCC (2) 684',
+    summary: 'Constitutionality of death penalty, with the famous “rarest of rare” framework for sentencing.',
+    details: 'The Court held the death penalty was constitutionally permissible in India but must be reserved for the rarest of rare cases where alternative punishment is unquestionably foreclosed. It remains a foundational sentencing reference in criminal law teaching.',
+  },
+  {
+    id: 'arnesh-kumar-498a',
+    region: 'Indian Supreme Court',
+    icon: '📜', color: '#ef4444', tag: 'Criminal procedure', tagColor: 'rgba(239,68,68,0.15)', tagFg: '#ef4444',
+    title: 'Arnesh Kumar v. State of Bihar',
+    citation: '(2014) 8 SCC 273',
+    summary: 'Arrest and bail safeguards in IPC 498A complaints—police must apply the law strictly and not treat arrest as routine.',
+    details: 'Often cited alongside Section 498A (cruelty toward a woman) debates. The Court emphasized guidelines before arrest and the risk of misuse of criminal process in matrimonial disputes. Read with later orders on mediation and procedural fairness.',
+  },
+  {
+    id: 'article-14',
+    region: 'Constitution of India',
+    icon: '⚖️', color: '#3b82f6', tag: 'Constitutional text', tagColor: 'rgba(59,130,246,0.15)', tagFg: '#60a5fa',
+    title: 'Article 14 — Equality before the law',
+    citation: 'Constitution of India, 1950, Art. 14',
+    summary: 'The state shall not deny any person equality before the law or the equal protection of the laws within India.',
+    details: 'This card summarizes the constitutional text, not a single “judgment name.” Equality and non-arbitrariness have been developed across many Supreme Court decisions (for example, the basic structure of reasonable classification and evolving tests for state action). Use it as a pointer to doctrine, then read leading cases for your issue.',
+  },
+  {
+    id: 'article-21',
+    region: 'Constitution of India',
+    icon: '🛡️', color: '#22c55e', tag: 'Constitutional text', tagColor: 'rgba(34,197,94,0.15)', tagFg: '#22c55e',
+    title: 'Article 21 — Life and personal liberty',
+    citation: 'Constitution of India, 1950, Art. 21',
+    summary: 'No person shall be deprived of life or personal liberty except according to procedure established by law.',
+    details: 'Foundational for dignity, fair procedure, and several rights branches (privacy, health, livelihood in many decisions). Landmark judgments such as Maneka Gandhi and Puttaswamy interpret how “procedure established by law” must be fair, just, and reasonable—not merely any statute on the books.',
+  },
+  {
+    id: 'carlill',
+    region: 'Common law (England)',
+    icon: '💼', color: '#a855f7', tag: 'Contract', tagColor: 'rgba(168,85,247,0.15)', tagFg: '#a855f7',
+    title: 'Carlill v. Carbolic Smoke Ball Co.',
+    citation: '[1893] 1 QB 256',
+    summary: 'Classic offer-and-acceptance case: a general advertisement can amount to a unilateral offer performable by anyone who meets the stated conditions.',
+    details: 'Still taught in contract law worldwide for consideration, communication of acceptance, and “reward” style offers. Indian contract courses often cite it alongside Sections 10 and 11 of the Indian Contract Act, 1872 for analogous ideas.',
+  },
+  {
+    id: 'tpa-53a',
+    region: 'Indian statute',
+    icon: '🏗️', color: '#f59e0b', tag: 'Property', tagColor: 'rgba(245,158,11,0.15)', tagFg: '#f59e0b',
+    title: 'Transfer of Property Act — Section 53A',
+    citation: 'Transfer of Property Act, 1882',
+    summary: 'Part performance: limited protection where a written contract exists and the transferee has taken possession or performed acts in furtherance.',
+    details: 'Explains the statutory part-performance bar to a transferor denying the agreement after the transferee has acted in reliance. Nuances depend on possession, pleadings, and registration—verify current judicial gloss with counsel for property disputes.',
+  },
+  {
+    id: 'puttaswamy',
+    region: 'Indian Supreme Court',
+    icon: '🔒', color: '#06b6d4', tag: 'Privacy', tagColor: 'rgba(6,182,212,0.15)', tagFg: '#06b6d4',
+    title: 'K.S. Puttaswamy v. Union of India',
+    citation: '(2017) 10 SCC 1',
+    summary: 'Nine-judge bench: privacy is a fundamental right flowing from dignity and liberty under Part III of the Constitution.',
+    details: 'Grounds later debates on Aadhaar, surveillance, data protection, and proportionality tests for state intrusion. Often read together with Article 21 and evolving data-protection legislation.',
+  },
+  {
+    id: 'salomon',
+    region: 'Common law (UK)',
+    icon: '📊', color: '#ec4899', tag: 'Company law', tagColor: 'rgba(236,72,153,0.15)', tagFg: '#ec4899',
+    title: 'Salomon v. Salomon & Co. Ltd.',
+    citation: '[1897] AC 22',
+    summary: 'Separate legal personality: a duly incorporated company is distinct from its shareholders except where statute or fraud warrants lifting the veil.',
+    details: 'Foundational for corporate law and limited liability. Indian company law builds on similar ideas; piercing the veil remains heavily fact-specific.',
+  },
+  {
+    id: 'vishaka',
+    region: 'Indian Supreme Court',
+    icon: '🤝', color: '#14b8a6', tag: 'Labour / POSH', tagColor: 'rgba(20,184,166,0.15)', tagFg: '#14b8a6',
+    title: 'Vishaka v. State of Rajasthan',
+    citation: '(1997) 6 SCC 241',
+    summary: 'Binding guidelines on workplace sexual harassment until Parliament enacted the POSH framework.',
+    details: 'The guidelines shaped employer duties, complaints committees, and preventive measures. Today, compliance work usually centers on the Sexual Harassment of Women at Workplace Act, 2013 and rules, with Vishaka cited for historical continuity.',
+  },
+  {
+    id: 'donoghue',
+    region: 'Common law (UK)',
+    icon: '📋', color: '#8b5cf6', tag: 'Torts', tagColor: 'rgba(139,92,246,0.15)', tagFg: '#8b5cf6',
+    title: 'Donoghue v. Stevenson',
+    citation: '[1932] AC 562',
+    summary: 'Neighbor principle: manufacturers owe a duty of care to consumers where harm is foreseeable.',
+    details: 'Core negligence reference in common-law systems. Indian tort law is statute-driven in parts but still discusses negligence and duty in analogous terms in civil wrongs teaching.',
+  },
 ];
 
 let filteredJudgments = [...JUDGMENTS];
@@ -571,7 +656,7 @@ function renderJudgments(list) {
   const src   = list || filteredJudgments;
   if (!src.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No results found</p></div>'; return; }
   grid.innerHTML = src.map(j => `
-    <div class="judgment-card" onclick="showJudgmentDetail('${escapeAttr(j.title)}')">
+    <div class="judgment-card" role="button" tabindex="0" data-jid="${escapeHtml(j.id)}">
       <div class="judgment-icon" style="background:${j.tagColor}">
         <span style="font-size:18px">${j.icon}</span>
       </div>
@@ -590,16 +675,51 @@ function filterJudgments() {
     j.title.toLowerCase().includes(q) ||
     j.citation.toLowerCase().includes(q) ||
     j.tag.toLowerCase().includes(q) ||
-    j.summary.toLowerCase().includes(q)
+    j.summary.toLowerCase().includes(q) ||
+    (j.region && j.region.toLowerCase().includes(q)) ||
+    (j.details && j.details.toLowerCase().includes(q))
   );
   renderJudgments();
 }
 
-function showJudgmentDetail(title) {
-  const j = JUDGMENTS.find(x => x.title === title);
+function closeJudgmentDetail(event) {
+  if (!event || event.target.id === 'judgmentDetailModal') {
+    document.getElementById('judgmentDetailModal').classList.remove('open');
+  }
+}
+
+function showJudgmentDetail(id) {
+  const j = JUDGMENTS.find(x => x.id === id);
   if (!j) return;
-  showToast(`Opening: ${j.title.slice(0, 40)}…`);
-  // Future: open a detail modal
+
+  document.getElementById('judgmentModalTitle').textContent = j.title;
+  const body = document.getElementById('judgmentModalBody');
+  body.innerHTML = `
+    <div class="judgment-detail-region">${escapeHtml(j.region || '')}</div>
+    <div class="judgment-detail-citation">${escapeHtml(j.citation)}</div>
+    <div class="judgment-detail-summary">${escapeHtml(j.summary)}</div>
+    <div class="judgment-detail-details">${escapeHtml(j.details || '')}</div>
+    <div class="judgment-detail-disclaimer">
+      Educational summary only—not legal advice. Verify citations and read full judgments or statutes before relying on them in practice.
+    </div>
+    <div class="judgment-detail-actions">
+      <button type="button" class="btn-primary" onclick="openJudgmentInAssistant('${escapeHtml(j.id)}')">Ask in Assistant</button>
+      <button type="button" class="btn-ghost" onclick="closeJudgmentDetail()">Close</button>
+    </div>
+  `;
+
+  document.getElementById('judgmentDetailModal').classList.add('open');
+}
+
+function openJudgmentInAssistant(id) {
+  const j = JUDGMENTS.find(x => x.id === id);
+  if (!j) return;
+  closeJudgmentDetail();
+  switchTab('chat');
+  const input = document.getElementById('chatInput');
+  input.value = `In 5–8 bullet points, explain ${j.title} (${j.citation}) and what practitioners typically take from it.`;
+  input.focus();
+  autoResize(input);
 }
 
 // ── DRAFT GENERATOR ───────────────────────────────────────────────────────────

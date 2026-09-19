@@ -1,4 +1,4 @@
-from backend.ai_client.llm_client import LocalHTTPResponder
+from backend.ai_client.llm_client import LocalHTTPResponder, RuleBasedResponder
 
 
 class _FakeResponse:
@@ -27,3 +27,12 @@ def test_local_http_responder_posts_openai_compatible_payload(monkeypatch):
     assert calls[0]["json"]["messages"][0]["role"] == "system"
     assert calls[0]["json"]["messages"][1]["role"] == "user"
     assert calls[0]["timeout"] == 7
+
+
+def test_rule_responder_matches_landmark_cases_like_chat_service():
+    """RuleBasedResponder must use the same landmark briefings as /chat (summary LLM path)."""
+    r = RuleBasedResponder()
+    out = r.generate("Explain Bachan Singh v. State of Punjab briefly.", None)
+    assert "Bachan Singh" in out
+    assert "rarest" in out.lower()
+    assert "offline, document-analysis mode" not in out.lower()

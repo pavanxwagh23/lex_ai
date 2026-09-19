@@ -823,6 +823,19 @@ body {
   flex-shrink: 0;
 }
 
+.landmarks-intro {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 720px;
+}
+.landmarks-intro strong { color: var(--text-primary); font-weight: 600; }
+
+.judgment-card:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .judgment-body h4 { font-size: 14px; font-weight: 600; line-height: 1.4; }
 .judgment-body .citation { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 .judgment-body .tag {
@@ -833,6 +846,54 @@ body {
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.judgment-modal {
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(85vh, 640px);
+  display: flex;
+  flex-direction: column;
+}
+.judgment-modal .modal-header { flex-shrink: 0; }
+.judgment-modal-body {
+  overflow-y: auto;
+  flex: 1;
+  gap: 12px;
+}
+.judgment-detail-region {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.judgment-detail-citation {
+  font-size: 13px;
+  color: var(--accent-light);
+  font-family: ui-monospace, monospace;
+}
+.judgment-detail-summary {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+.judgment-detail-details {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.judgment-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.judgment-detail-disclaimer {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.45;
 }
 
 /* ══════════════════ DRAFT ══════════════════ */

@@ -175,7 +175,10 @@
       <div class="landmarks-container">
         <div class="section-header">
           <h2>Landmark Judgments</h2>
-          <p>Key Indian Supreme Court & High Court cases — curated for quick reference</p>
+          <p class="landmarks-intro">
+            Curated <strong>reading guide</strong>: short summaries of important Indian court decisions (and a few classic contract-law cases from other jurisdictions) for orientation and learning.
+            Open a card for a fuller note. This is <strong>not legal advice</strong>—always verify citations and consult counsel for your matter.
+          </p>
         </div>
         <div class="search-bar">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -233,6 +236,17 @@
     </section>
 
   </main>
+
+  <!-- ════════════════════ JUDGMENT DETAIL MODAL ════════════════════ -->
+  <div class="modal-overlay" id="judgmentDetailModal" onclick="closeJudgmentDetail(event)">
+    <div class="modal judgment-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="judgmentModalTitle">Judgment</h3>
+        <button type="button" class="modal-close" onclick="closeJudgmentDetail()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body judgment-modal-body" id="judgmentModalBody"></div>
+    </div>
+  </div>
 
   <!-- ════════════════════ SETTINGS MODAL ════════════════════ -->
   <div class="modal-overlay" id="settingsModal" onclick="closeSettings(event)">

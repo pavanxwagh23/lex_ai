@@ -9,6 +9,7 @@ service.
 
 Supported Intents
 -----------------
+- ``CLAUSE_MAP`` — list / map / classify clause types in a contract
 - ``SUMMARY``  — user wants a contract summarized
 - ``RISK``     — user wants a risk analysis
 - ``COMPARE``  — user wants to compare two contracts
@@ -33,11 +34,23 @@ logger = get_logger(__name__)
 # The patterns are compiled once at import time for performance.
 
 _INTENT_PATTERNS: List[Tuple[str, re.Pattern]] = [
+    # ── CLAUSE_MAP (before SUMMARY: SUMMARY regex used to match bare "break down") ─
+    ("CLAUSE_MAP", re.compile(
+        r"(list|map|identify|show|find|detect)\s+(all\s+)?(the\s+)?"
+        r"(clause|section|provision|article|part)(s|(\s+type))?"
+        r"|what\s+(type|kind)s?\s+of\s+(clause|section|provision)"
+        r"|classify\s+(the\s+)?(contract|document|clauses?)"
+        r"|break\s*down\s+(the\s+)?(clause|section|contract|clauses?)"
+        r"|clause\s+map|map\s+(the\s+)?clauses?",
+        re.IGNORECASE,
+    )),
+
     # ── SUMMARY ─────────────────────────────────────────────────────────
     ("SUMMARY", re.compile(
         r"summari[sz]e|summary|overview|brief|what\s+does\s+this\s+(contract|agreement)\s+(say|cover)"
         r"|give\s+me\s+a\s+summary|key\s+points|main\s+points|extract\s+summary|tldr|tl;dr"
-        r"|explain\s+this\s+(contract|document|agreement)|break\s+down",
+        r"|explain\s+this\s+(contract|document|agreement)\b"
+        r"|break\s+down\s+(this\s+)?(contract|agreement|document|for\s+me)\b",
         re.IGNORECASE,
     )),
 
@@ -65,15 +78,6 @@ _INTENT_PATTERNS: List[Tuple[str, re.Pattern]] = [
         re.IGNORECASE,
     )),
 
-    # ── CLAUSE_MAP ──────────────────────────────────────────────────────
-    ("CLAUSE_MAP", re.compile(
-        r"(list|map|identify|show|find|detect)\s+(all\s+)?(the\s+)?"
-        r"(clause|section|provision|article|part)(s|(\s+type))?"
-        r"|what\s+(type|kind)s?\s+of\s+(clause|section|provision)"
-        r"|classify\s+(the\s+)?(contract|document|clauses?)"
-        r"|break\s*down\s+(the\s+)?(clause|section|contract)",
-        re.IGNORECASE,
-    )),
 ]
 
 

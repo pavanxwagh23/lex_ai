@@ -147,21 +147,20 @@ class RuleBasedResponder:
 
     def generate(self, prompt: str, system_prompt: Optional[str] = None) -> str:
         """Match prompt against rules and return the best matching response."""
+        from backend.services.chat_service import OFFLINE_CHAT_FALLBACK, match_offline_snippet
+
+        snippet = match_offline_snippet(prompt)
+        if snippet:
+            logger.info("RuleBasedResponder: matched landmark / chat knowledge snippet")
+            return snippet
+
         for pattern, response in self._RULES:
             if pattern.search(prompt):
                 logger.info("RuleBasedResponder: matched pattern '%s'", pattern.pattern[:40])
                 return response
 
-        # Default fallback
-        logger.info("RuleBasedResponder: no rule matched, returning fallback.")
-        return (
-            "I'm currently operating in **offline, document-analysis mode**. "
-            "I can analyze documents you upload — try:\n\n"
-            "- *'Summarize this contract'*\n"
-            "- *'Find legal risks'*\n"
-            "- *'List all clauses'*\n\n"
-            "For general legal advice, please consult a qualified attorney."
-        )
+        logger.info("RuleBasedResponder: no rule matched, returning shared offline fallback.")
+        return OFFLINE_CHAT_FALLBACK
 
 
 # ---------------------------------------------------------------------------
